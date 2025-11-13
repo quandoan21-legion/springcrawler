@@ -1,5 +1,8 @@
 package com.example.springcrawler.controllers;
 
+import com.example.springcrawler.dto.LoginRequest;
+import com.example.springcrawler.model.User;
+import com.example.springcrawler.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,10 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.t2404e.spring_prj.dto.LoginRequest;
-import org.t2404e.spring_prj.model.User;
-import org.t2404e.spring_prj.service.UserService;
-
 @Controller
 @RequestMapping("api/v1/auth")
 public class AuthController {

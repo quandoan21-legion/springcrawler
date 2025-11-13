@@ -1,8 +1,7 @@
 package com.example.springcrawler.repository;
 
+import com.example.springcrawler.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.t2404e.spring_prj.model.User;
-
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {

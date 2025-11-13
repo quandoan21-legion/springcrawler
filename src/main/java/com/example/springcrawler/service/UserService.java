@@ -1,10 +1,10 @@
 package com.example.springcrawler.service;
 
+import com.example.springcrawler.model.User;
+import com.example.springcrawler.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.t2404e.spring_prj.model.User;
-import org.t2404e.spring_prj.repository.UserRepository;
 
 @Service
 public class UserService {
