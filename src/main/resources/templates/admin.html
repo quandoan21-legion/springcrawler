@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang Admin</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="container">
+    <h1>Xin chào, <span th:text="${adminName}">Admin</span></h1>
+
+    <div class="admin-stats">
+        <div>Bài viết: 10</div>
+        <div>Người dùng: 5</div>
+        <div>Danh mục: 3</div>
+    </div>
+
+    <table class="admin-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tiêu đề bài viết</th>
+            <th>Ngày tạo</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Dữ liệu bài viết sẽ lặp ở đây -->
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
