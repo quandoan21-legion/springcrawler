@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý bài viết</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="container">
+    <h1>Quản lý bài viết</h1>
+
+    <!-- Nút thêm bài viết -->
+    <div class="button-container">
+        <a th:href="@{/admin/posts/add}" class="btn-save">Thêm bài viết</a>
+    </div>
+
+    <!-- Bảng hiển thị bài viết -->
+    <table class="admin-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tiêu đề</th>
+            <th>Slug</th>
+            <th>Danh mục</th>
+            <th>Trạng thái</th>
+            <th>Unique</th>
+            <th>Ngày tạo</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="post : ${posts}">
+            <td th:text="${post.id}"></td>
+            <td th:text="${post.title}"></td>
+            <td th:text="${post.slug}"></td>
+            <td th:text="${post.category.name}"></td>
+            <td th:text="${post.status}"></td>
+            <td th:text="${post.uniqueContent} ? 'Yes' : 'No'"></td>
+            <td th:text="${post.createdAt}"></td>
+            <td class="button-container">
+                <a th:href="@{/admin/posts/edit/{id}(id=${post.id})}" class="btn-save">Sửa</a>
+                <a th:href="@{/admin/posts/delete/{id}(id=${post.id})}" class="btn-back-link"
+                   onclick="return confirm('Bạn có chắc muốn xóa bài viết này không?');">Xóa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Nút quay lại admin -->
+    <div class="button-container">
+        <a href="/admin" class="btn-back-link">Quay lại</a>
+    </div>
+</div>
+</body>
+</html>

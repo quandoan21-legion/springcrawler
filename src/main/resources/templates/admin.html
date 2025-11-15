@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>Trang Admin</title>
@@ -9,25 +9,27 @@
 <div class="container">
     <h1>Xin chào, <span th:text="${adminName}">Admin</span></h1>
 
+    <!-- Thống kê nhanh -->
     <div class="admin-stats">
-        <div>Bài viết: 10</div>
-        <div>Người dùng: 5</div>
-        <div>Danh mục: 3</div>
+        <a href="/admin/users" class="admin-box">
+            <div>Người dùng</div>
+        </a>
+        <a href="/admin/posts" class="admin-box">
+            <div>Bài viết</div>
+        </a>
+        <a href="/admin/categories" class="admin-box">
+            <div>Danh mục</div>
+        </a>
+
+    </div>
+    <div class="logout-container">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Đăng xuất</button>
+        </form>
     </div>
 
-    <table class="admin-table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Tiêu đề bài viết</th>
-            <th>Ngày tạo</th>
-            <th>Hành động</th>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- Dữ liệu bài viết sẽ lặp ở đây -->
-        </tbody>
-    </table>
+
+
 </div>
 </body>
 </html>

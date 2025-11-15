@@ -3,7 +3,13 @@ package com.example.springcrawler.controllers;
 import com.example.springcrawler.dto.LoginRequest;
 import com.example.springcrawler.model.User;
 import com.example.springcrawler.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +17,20 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
 @Controller
 @RequestMapping("api/v1/auth")
 public class AuthController {
+
+    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+    // Constructor injection để @Autowired AuthenticationManager + UserService
     @Autowired
-    private UserService userService;
+    public AuthController(UserService userService, AuthenticationManager authenticationManager) {
+        this.userService = userService;
+        this.authenticationManager = authenticationManager;
+    }
 
     // Hiển thị trang login
     @GetMapping
@@ -27,13 +42,19 @@ public class AuthController {
     // Xử lý đăng nhập
     @PostMapping("/login")
     public String loginSubmit(@ModelAttribute LoginRequest loginRequest, Model model) {
-//        String message = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
-//        model.addAttribute("message", message);
-//        model.addAttribute("loginRequest", loginRequest);
-//        if(message.equals("Đăng nhập thành công")) {
-//            return "redirect:/admin"; // redirect sang trang admin nếu login thành công
-//        }
-        return "login";
+        try {
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
+            Authentication authentication = authenticationManager.authenticate(authToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return "redirect:/admin";
+        } catch (Exception e) {
+            // Ghi log thay vì printStackTrace
+            logger.error("Login failed for email {}: {}", loginRequest.getEmail(), e.getMessage(), e);
+            model.addAttribute("message", "Email hoặc mật khẩu không đúng!");
+            model.addAttribute("loginRequest", loginRequest);
+            return "login";
+        }
     }
 
     // Hiển thị trang đăng ký
@@ -55,7 +76,3 @@ public class AuthController {
         return "register";
     }
 }
-
-
-
-
