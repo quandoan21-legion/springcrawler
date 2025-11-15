@@ -66,9 +66,9 @@
         <div class="form-group">
             <label for="status">Trạng thái:</label>
             <select id="status" name="status">
-                <option th:value="DRAFT" th:selected="${post.status == T(org.t2404e.spring_prj.model.Post.Status).DRAFT}">Nháp</option>
-                <option th:value="PUBLISHED" th:selected="${post.status == T(org.t2404e.spring_prj.model.Post.Status).PUBLISHED}">Đã xuất bản</option>
-                <option th:value="DELETED" th:selected="${post.status == T(org.t2404e.spring_prj.model.Post.Status).DELETED}">Đã xóa</option>
+                <option th:value="DRAFT" th:selected="${post.status == T(com.example.springcrawler.model.Post.Status).DRAFT}">Nháp</option>
+                <option th:value="PUBLISHED" th:selected="${post.status == T(com.example.springcrawler.model.Post.Status).PUBLISHED}">Đã xuất bản</option>
+                <option th:value="DELETED" th:selected="${post.status == T(com.example.springcrawler.model.Post.Status).DELETED}">Đã xóa</option>
             </select>
         </div>
 
