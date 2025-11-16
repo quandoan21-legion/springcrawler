@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Xác thực OTP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">Xác thực OTP</h3>
+
+                    <!-- Thông báo lỗi -->
+                    <div th:if="${message}" class="alert alert-danger" th:text="${message}"></div>
+                    <!-- Thông báo success -->
+                    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+                    <!-- Form nhập OTP -->
+                    <form th:action="@{/api/v1/auth/verify-otp}" method="post">
+                        <input type="hidden" name="email" th:value="${email}" />
+                        <div class="mb-3">
+                            <label for="otp" class="form-label">Nhập mã OTP</label>
+                            <input type="text" class="form-control" id="otp" name="otp" placeholder="6 chữ số OTP" required/>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Xác thực</button>
+                    </form>
+
+                    <!-- Countdown OTP -->
+                    <p class="text-center mt-3" id="otpTimer">
+                        OTP sẽ hết hạn sau [[${secondsRemaining}]] giây
+                    </p>
+
+
+                    <!-- Nút gửi lại OTP -->
+                    <div class="d-flex justify-content-center mt-3">
+                        <a th:href="@{/api/v1/auth/register}" class="btn btn-secondary me-2">Quay lại</a>
+                        <form th:action="@{/api/v1/auth/resend-otp}" method="get" class="m-0" id="resendForm">
+                            <input type="hidden" name="email" th:value="${email}" />
+                            <button type="submit" class="btn btn-outline-primary" id="resendBtn" >Gửi lại OTP</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    // Lấy thời gian còn lại từ backend
+
+    let time = [[${secondsRemaining}]];
+
+    const timerDisplay = document.getElementById('otpTimer');
+    const resendBtn = document.getElementById('resendBtn');
+    const resendForm = document.getElementById('resendForm');
+    const otpInput = document.getElementById('otp');
+
+    // Disable nút resend nếu time > 0
+    resendBtn.disabled = time > 0;
+
+    function updateTimer() {
+        if(time > 0) {
+            let minutes = Math.floor(time / 60);
+            let seconds = time % 60;
+            timerDisplay.textContent = `OTP sẽ hết hạn sau ${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+            time--;
+        } else {
+            timerDisplay.textContent = "OTP đã hết hạn!";
+            resendBtn.disabled = false;
+            clearInterval(countdown);
+        }
+    }
+    updateTimer();
+    let countdown = setInterval(updateTimer, 1000);
+
+    // Khi click gửi lại OTP
+    resendForm.addEventListener('submit', function(e){
+        if(resendBtn.disabled) {
+            e.preventDefault(); // chặn nếu chưa đủ thời gian
+        } else {
+            // chỉ khi resend thành công, reset countdown
+            e.preventDefault(); // ngăn form submit thực sự, dùng redirect từ backend nếu muốn
+            resendBtn.disabled = true;
+
+            // reset countdown mới
+            clearInterval(countdown);
+            time = 60;
+            countdown = setInterval(updateTimer, 1000);
+
+            // reset input OTP
+            otpInput.value = '';
+        }
+    });
+
+
+
+</script>
+
+</body>
+</html>
