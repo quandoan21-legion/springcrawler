@@ -12,6 +12,8 @@
     <h2>Đăng nhập</h2>
 
     <!-- Thông báo lỗi / thành công -->
+    <p th:if="${success}" class="message-box success" th:text="${success}"></p>
+    <p th:if="${error}" class="message-box error" th:text="${error}"></p>
     <p th:if="${param.error}" class="message-box error">
         Email hoặc mật khẩu không đúng!
     </p>

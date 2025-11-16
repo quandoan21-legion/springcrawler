@@ -15,21 +15,29 @@
 
                     <!-- Thông báo lỗi -->
                     <div th:if="${message}" class="alert alert-danger" th:text="${message}"></div>
+                    <!-- Thông báo success -->
+                    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
+                    <!-- Form nhập OTP -->
                     <form th:action="@{/api/v1/auth/verify-otp}" method="post">
-                        <!-- Email ẩn -->
-                        <input type="hidden" name="email" th:value="${email}"/>
-
+                        <input type="hidden" name="email" th:value="${email}" />
                         <div class="mb-3">
                             <label for="otp" class="form-label">Nhập mã OTP</label>
                             <input type="text" class="form-control" id="otp" name="otp" placeholder="6 chữ số OTP" required/>
                         </div>
-
                         <button type="submit" class="btn btn-primary w-100">Xác thực</button>
                     </form>
 
-                    <div class="text-center mt-3">
-                        <small>OTP sẽ hết hạn sau 5 phút. Nếu không nhận được, kiểm tra hộp thư Spam.</small>
+                    <!-- Countdown OTP -->
+                    <p class="text-center mt-3" id="otpTimer">OTP sẽ hết hạn sau 01:00</p>
+
+                    <!-- Nút gửi lại OTP -->
+                    <div class="d-flex justify-content-center mt-3">
+                        <a th:href="@{/api/v1/auth/register}" class="btn btn-secondary me-2">Quay lại</a>
+                        <form th:action="@{/api/v1/auth/resend-otp}" method="get" class="m-0">
+                            <input type="hidden" name="email" th:value="${email}" />
+                            <button type="submit" class="btn btn-outline-primary" id="resendBtn">Gửi lại OTP</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -39,5 +47,41 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Thời gian countdown OTP (giây)
+    let time = 60; // 1 phút
+    const timerDisplay = document.getElementById('otpTimer');
+    const resendBtn = document.getElementById('resendBtn');
+
+    // Lần đầu load trang → nút gửi lại bật
+    let canResend = true;
+
+    // Bắt sự kiện click nút gửi lại OTP
+    resendBtn.addEventListener('click', function(e) {
+        if (!canResend) {
+            e.preventDefault();
+            return;
+        }
+        canResend = false;            // tắt nút
+        resendBtn.disabled = true;
+
+        // reset countdown về 60 giây
+        time = 60;
+    });
+
+    // Countdown mỗi giây
+    const countdown = setInterval(() => {
+        let minutes = Math.floor(time / 60);
+        let seconds = time % 60;
+        timerDisplay.textContent = `OTP sẽ hết hạn sau ${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+        if (time > 0) time--;
+
+        // Khi countdown kết thúc → mở nút gửi lại
+        if (time <= 0 && !canResend) {
+            resendBtn.disabled = false;
+            canResend = true;
+        }
+    }, 1000);
+</script>
 </body>
 </html>

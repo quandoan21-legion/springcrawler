@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -40,41 +39,86 @@ public class UserService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
-                .roles("ADMIN") // Thay bằng role thực tế nếu cần
+                .roles("ADMIN")
                 .build();
     }
 
-    // ========== ĐĂNG KÝ NGƯỜI DÙNG (không dùng OTP, giữ nguyên nếu muốn) ==========
-    public String register(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            return "Email đã tồn tại!";
+    public boolean registerWithOTP(User user) {
+        Optional<User> existingUserOpt = userRepository.findByEmail(user.getEmail());
+
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+
+            if (existingUser.isEnabled()) {
+                // Email đã verify → không thể đăng ký lại
+                return false;
+            } else {
+                // Email chưa verify
+                // Lần đầu chưa gửi OTP → gửi luôn
+                if (existingUser.getLastOtpSentTime() == null) {
+                    String otp = String.valueOf(100000 + new Random().nextInt(900000));
+                    existingUser.setOtp(otp);
+                    existingUser.setOtpExpiredTime(LocalDateTime.now().plusMinutes(1));
+                    existingUser.setLastOtpSentTime(LocalDateTime.now());
+                    userRepository.save(existingUser);
+                    emailService.sendOTPEmail(existingUser.getEmail(), otp);
+                } else {
+                    // Nếu đã gửi lần trước → gọi resendOTP để áp dụng 1 phút chờ
+                    resendOTP(existingUser.getEmail());
+                }
+                return true; // redirect sang OTP
+            }
         }
+
+        // Email chưa tồn tại → tạo mới
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return "Đăng ký thành công!";
-    }
-
-    // ========== ĐĂNG KÝ NGƯỜI DÙNG VỚI OTP ==========
-    public String registerWithOTP(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            return "Email đã tồn tại!";
-        }
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        // Sinh OTP 6 chữ số
         String otp = String.valueOf(100000 + new Random().nextInt(900000));
         user.setOtp(otp);
-        user.setOtpExpiredTime(LocalDateTime.now().plusMinutes(5));
-        user.setEnabled(false); // chưa active
+        user.setOtpExpiredTime(LocalDateTime.now().plusMinutes(1));
+        user.setLastOtpSentTime(LocalDateTime.now());
+        user.setEnabled(false);
 
         userRepository.save(user);
-
-        // Gửi OTP qua email
         emailService.sendOTPEmail(user.getEmail(), otp);
 
-        return "Đăng ký thành công! OTP đã được gửi tới email: " + user.getEmail();
+        return true;
     }
+
+
+    public String resendOTP(String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isEmpty()) return "Email không tồn tại!";
+
+        User user = optionalUser.get();
+
+        if (user.isEnabled()) {
+            return "Tài khoản đã được kích hoạt!";
+        }
+
+        // Kiểm tra thời gian gửi OTP gần nhất
+        if (user.getLastOtpSentTime() != null) {
+            LocalDateTime now = LocalDateTime.now();
+            long secondsSinceLast = java.time.Duration.between(user.getLastOtpSentTime(), now).getSeconds();
+            if (secondsSinceLast < 60) { // 1 phút = 60 giây
+                long wait = 60 - secondsSinceLast;
+                return "Bạn phải chờ " + wait + " giây trước khi gửi lại OTP!";
+            }
+        }
+
+        // Sinh OTP mới
+        String otp = String.valueOf(100000 + new Random().nextInt(900000));
+        user.setOtp(otp);
+        user.setOtpExpiredTime(LocalDateTime.now().plusMinutes(1)); // reset 2 phút
+        user.setLastOtpSentTime(LocalDateTime.now()); // cập nhật thời gian gửi OTP
+        userRepository.save(user);
+
+        // Gửi email OTP mới
+        emailService.sendOTPEmail(user.getEmail(), otp);
+
+        return "OTP mới đã được gửi tới email: " + user.getEmail();
+    }
+
+
 
     // ========== XÁC THỰC OTP ==========
     public boolean verifyOTP(String email, String otp) {
@@ -82,6 +126,7 @@ public class UserService implements UserDetailsService {
         if (optionalUser.isEmpty()) return false;
 
         User user = optionalUser.get();
+
         if (user.getOtp() != null &&
                 user.getOtp().equals(otp) &&
                 LocalDateTime.now().isBefore(user.getOtpExpiredTime())) {
@@ -93,7 +138,8 @@ public class UserService implements UserDetailsService {
             userRepository.save(user);
             return true;
         }
-        return false;
+
+        return false; // OTP sai hoặc hết hạn
     }
 
     // ========== QUẢN LÝ NGƯỜI DÙNG ==========
