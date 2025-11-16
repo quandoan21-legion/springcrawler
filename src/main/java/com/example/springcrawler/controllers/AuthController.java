@@ -3,6 +3,10 @@ package com.example.springcrawler.controllers;
 import com.example.springcrawler.dto.LoginRequest;
 import com.example.springcrawler.model.User;
 import com.example.springcrawler.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,21 +54,33 @@ public class AuthController {
 
     // Xử lý đăng nhập
     @PostMapping("/login")
-    public String loginSubmit(@ModelAttribute LoginRequest loginRequest, Model model) {
+    public String loginSubmit(@ModelAttribute LoginRequest loginRequest,
+                              HttpServletRequest request,
+                              HttpServletResponse response,
+                              Model model) {
         try {
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
             Authentication authentication = authenticationManager.authenticate(authToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // Lấy HttpSession
+            HttpSession session = request.getSession(true); // true tạo mới nếu chưa có
+            session.setAttribute("userEmail", loginRequest.getEmail()); // lưu email vào session
+            // Tùy chỉnh cookie
+            Cookie sessionCookie = new Cookie("MY_SESSION_ID", session.getId());
+            sessionCookie.setHttpOnly(true); // bảo mật
+            sessionCookie.setSecure(true);   // nếu dùng https
+            sessionCookie.setMaxAge(60 * 60); // 1 giờ
+            sessionCookie.setPath("/");
+            response.addCookie(sessionCookie);
             return "redirect:/admin";
         } catch (Exception e) {
-            // Ghi log thay vì printStackTrace
-            logger.error("Login failed for email {}: {}", loginRequest.getEmail(), e.getMessage(), e);
             model.addAttribute("message", "Email hoặc mật khẩu không đúng!");
-            model.addAttribute("loginRequest", loginRequest);
             return "login";
         }
     }
+
 
     // Hiển thị trang đăng ký
     @GetMapping("/register")
