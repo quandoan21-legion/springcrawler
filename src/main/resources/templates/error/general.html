@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Có lỗi xảy ra</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="container">
+    <h1>Đã xảy ra lỗi</h1>
+    <p th:text="'Mã lỗi: ' + ${status}"></p>
+    <p th:text="'Đường dẫn: ' + ${path}"></p>
+    <div class="button-container">
+        <a th:href="@{/}" class="btn-save">Về trang chủ</a>
+        <a th:href="@{/api/v1/auth}" class="btn-back-link">Đăng nhập</a>
+    </div>
+</div>
+</body>
+</html>

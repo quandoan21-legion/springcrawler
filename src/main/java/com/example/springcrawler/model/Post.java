@@ -3,6 +3,7 @@ package com.example.springcrawler.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.example.springcrawler.model.Category;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +17,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String title;
 
     @Column(nullable = true, unique = true)
@@ -30,7 +31,7 @@ public class Post {
     private String shortDescription;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id", nullable = true)
     private Category category;
 
     private String sourceUrl;
@@ -43,10 +44,11 @@ public class Post {
     private Status status = Status.DRAFT;
 
     private boolean uniqueContent = false;
-
+    private String imgUrl = null;
     private String seoTitle;
     private String seoDescription;
     private String seoKeywords;
+    private String crawlUrl;
 
     public Post(String title, String slug, String content, String shortDescription, Category category) {
         this.title = title;
@@ -57,8 +59,6 @@ public class Post {
     }
 
     public enum Status {
-        DRAFT,
-        PUBLISHED,
-        DELETED
+        DRAFT, UNCRAWL, CRAWLED, PUBLISHED, DELETED
     }
 }

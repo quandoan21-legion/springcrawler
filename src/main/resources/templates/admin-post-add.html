@@ -54,9 +54,11 @@
         <div class="form-group">
             <label for="status">Trạng thái:</label>
             <select id="status" name="status">
-                <option th:value="DRAFT" th:selected="${post.status == T(com.example.springcrawler.model.Post.Status).DRAFT}">Nháp</option>
-                <option th:value="PUBLISHED" th:selected="${post.status == T(com.example.springcrawler.model.Post.Status).PUBLISHED}">Đã xuất bản</option>
-                <option th:value="DELETED" th:selected="${post.status == T(com.example.springcrawler.model.Post.Status).DELETED}">Đã xóa</option>
+                <option th:each="status : ${T(com.example.springcrawler.model.Post.Status).values()}"
+                        th:value="${status}"
+                        th:selected="${post.status == status}"
+                        th:text="${status.name()}">
+                </option>
             </select>
         </div>
 
