@@ -219,7 +219,7 @@ public class AuthController {
             long secondsRemaining = 0;
             if(optionalUser.isPresent() && optionalUser.get().getLastOtpSentTime() != null) {
                 long secondsSinceLast = java.time.Duration.between(optionalUser.get().getLastOtpSentTime(), LocalDateTime.now()).getSeconds();
-                secondsRemaining = Math.max(60 - secondsSinceLast, 0);
+                secondsRemaining = Math.max(120 - secondsSinceLast, 0);
             }
 
             model.addAttribute("secondsRemaining", secondsRemaining);

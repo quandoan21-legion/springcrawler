@@ -79,7 +79,7 @@ public class UserService implements UserDetailsService {
     private void sendNewOTP(User user) {
         String otp = String.valueOf(100000 + new Random().nextInt(900000));
         user.setOtp(otp);
-        user.setOtpExpiredTime(LocalDateTime.now().plusMinutes(1));
+        user.setOtpExpiredTime(LocalDateTime.now().plusMinutes(2));
         user.setLastOtpSentTime(LocalDateTime.now());
         userRepository.save(user);
         emailService.sendOTPEmail(user.getEmail(), otp);
@@ -97,8 +97,8 @@ public class UserService implements UserDetailsService {
         // Kiểm tra thời gian gửi OTP gần nhất
         if (user.getLastOtpSentTime() != null) {
             long secondsSinceLast = java.time.Duration.between(user.getLastOtpSentTime(), LocalDateTime.now()).getSeconds();
-            if (secondsSinceLast < 60) {
-                long wait = 60 - secondsSinceLast;
+            if (secondsSinceLast < 120) {
+                long wait = 120 - secondsSinceLast;
                 return "Bạn phải chờ " + wait + " giây trước khi gửi lại OTP!";
             }
         }
