@@ -44,11 +44,10 @@ public class Post {
     private Status status = Status.DRAFT;
 
     private boolean uniqueContent = false;
-    private String imgUrl = null;
+
     private String seoTitle;
     private String seoDescription;
     private String seoKeywords;
-    private String crawlUrl;
 
     public Post(String title, String slug, String content, String shortDescription, Category category) {
         this.title = title;
@@ -57,7 +56,6 @@ public class Post {
         this.shortDescription = shortDescription;
         this.category = category;
     }
-
 
     public enum Status {
         DRAFT, UNCRAWL, CRAWLED, PUBLISHED, DELETED

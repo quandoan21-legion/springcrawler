@@ -2,16 +2,14 @@ package com.example.springcrawler.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -28,6 +26,16 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    // Thời gian tạo và cập nhật
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
+
+    // Tài khoản chưa active → phải xác minh OTP mới login được
+    private boolean enabled = false;
+
+    // Lưu OTP gửi qua email
+    private String otp;
+
+    // Thời điểm hết hạn OTP
+    private LocalDateTime otpExpiredTime;
 }
