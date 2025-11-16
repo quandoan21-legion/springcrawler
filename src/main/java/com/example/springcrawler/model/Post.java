@@ -3,7 +3,7 @@ package com.example.springcrawler.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.example.springcrawler.model.Category;
+
 import java.time.LocalDateTime;
 
 @Data

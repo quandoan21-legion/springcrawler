@@ -5,6 +5,7 @@ import com.example.springcrawler.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ public class CategoryService {
         return category.orElse(null);
     }
 
-    // 🔹 Lấy danh mục theo tên
+    //  Lấy danh mục theo tên
     public Category getCategoryByName(String name) {
         Optional<Category> category = categoryRepository.findByName(name);
         return category.orElse(null);

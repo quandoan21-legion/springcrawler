@@ -3,6 +3,7 @@ package com.example.springcrawler.controllers;
 import com.example.springcrawler.model.Category;
 import com.example.springcrawler.model.Post;
 import com.example.springcrawler.model.User;
+
 import com.example.springcrawler.service.CategoryService;
 import com.example.springcrawler.service.PostService;
 import com.example.springcrawler.service.UserService;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
