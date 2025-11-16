@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -62,34 +63,57 @@ public class AuthController {
     }
     @PostMapping("/register")
     public String registerSubmit(@ModelAttribute User user, Model model) {
-        String message = userService.registerWithOTP(user); // gọi method mới
-        model.addAttribute("message", message);
-        model.addAttribute("user", user);
+        boolean success = userService.registerWithOTP(user); // sử dụng service mới
+        logger.info("User email: {}", user.getEmail());
 
-        // chuyển sang trang verify OTP
-        return "redirect:/api/v1/auth/verify-otp?email=" + user.getEmail();
+        if (success) {
+            // nếu đăng ký thành công hoặc email đã tồn tại nhưng chưa verify → chuyển sang form OTP
+            return "redirect:/api/v1/auth/verify-otp?email=" + user.getEmail();
+        } else {
+            // email đã tồn tại và đã verify
+            model.addAttribute("message", "Email đã tồn tại hoặc đang chờ xác thực!");
+            model.addAttribute("user", user);
+            return "register"; // quay lại form đăng ký
+        }
     }
+
+
+
     // Hiển thị form nhập OTP
     @GetMapping("/verify-otp")
     public String verifyOtpPage(@RequestParam String email, Model model) {
         model.addAttribute("email", email);
         return "verify-otp"; // verify-otp.html
     }
+    // Gửi lại OTP
+    @GetMapping("/resend-otp")
+    public String resendOtp(@RequestParam String email, Model model) {
+        String message = userService.resendOTP(email);
+        model.addAttribute("email", email);
+        model.addAttribute("message", message);
+        return "verify-otp"; // Quay lại trang nhập OTP
+    }
 
     // Xử lý submit OTP
     @PostMapping("/verify-otp")
     public String verifyOtpSubmit(@RequestParam String email,
                                   @RequestParam String otp,
-                                  Model model) {
+                                  RedirectAttributes redirectAttributes) {
+
         boolean success = userService.verifyOTP(email, otp);
         if (success) {
-            return "redirect:/api/v1/auth?success=thành công!";
+            // OTP hợp lệ → redirect về login với message success
+            redirectAttributes.addFlashAttribute("success", "Đăng ký thành công!");
+            return "redirect:/api/v1/auth";
         } else {
-            model.addAttribute("email", email);
-            model.addAttribute("message", "OTP không hợp lệ hoặc đã hết hạn!");
-            return "verify-otp";
+            // OTP sai → redirect lại form OTP với message lỗi
+            redirectAttributes.addFlashAttribute("error", "OTP không hợp lệ hoặc đã hết hạn!");
+            redirectAttributes.addAttribute("email", email); // để vẫn show email trên form
+            return "redirect:/api/v1/auth/verify-otp";
         }
     }
+
+
 
 
 

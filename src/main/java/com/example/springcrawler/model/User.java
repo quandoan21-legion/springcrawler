@@ -38,4 +38,7 @@ public class User {
 
     // Thời điểm hết hạn OTP
     private LocalDateTime otpExpiredTime;
+
+    private LocalDateTime lastOtpSentTime;
+
 }
