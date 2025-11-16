@@ -20,12 +20,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 
 @Service
 public class SourceCrawlService {
     private final PostService postService;
-
     public SourceCrawlService(PostService postService) {
         this.postService = postService;
     }
@@ -62,7 +63,7 @@ public class SourceCrawlService {
     }
 
     public void crawlUnCrawlPost(){
-        List<Post> uncrawlPost = postService.getUnCrawlPosts();
+        List<Post> uncrawlPost = postService.getUnCrawlPosts(10);
         for (Post post : uncrawlPost) {
             String url = post.getCrawlUrl();
             try {
