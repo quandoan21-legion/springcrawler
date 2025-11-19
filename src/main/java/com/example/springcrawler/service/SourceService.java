@@ -30,7 +30,13 @@ public class SourceService {
         return source.orElse(null);
     }
 
-    public Source createSource(Long categoryId, String url) {
+    public Source createSource(Long categoryId,
+                              String url,
+                              String titleSelector,
+                              String contentSelector,
+                              String descriptionSelector,
+                              String imageSelector,
+                              String removalSelector) {
         Category category = categoryService.getCategoryById(categoryId);
         if (category == null) {
             throw new IllegalArgumentException("Danh mục không tồn tại");
@@ -40,10 +46,22 @@ public class SourceService {
         source.setCategory(category);
         source.setUrl(url);
         source.setDeleted(false);
+        source.setTitleSelector(normalizeSelector(titleSelector));
+        source.setContentSelector(normalizeSelector(contentSelector));
+        source.setDescriptionSelector(normalizeSelector(descriptionSelector));
+        source.setImageSelector(normalizeSelector(imageSelector));
+        source.setRemovalSelector(normalizeSelector(removalSelector));
         return sourceRepository.save(source);
     }
 
-    public Source updateSource(Long id, Long categoryId, String url) {
+    public Source updateSource(Long id,
+                              Long categoryId,
+                              String url,
+                              String titleSelector,
+                              String contentSelector,
+                              String descriptionSelector,
+                              String imageSelector,
+                              String removalSelector) {
         Source existing = getSourceById(id);
         if (existing == null || existing.isDeleted()) {
             return null;
@@ -56,6 +74,11 @@ public class SourceService {
 
         existing.setCategory(category);
         existing.setUrl(url);
+        existing.setTitleSelector(normalizeSelector(titleSelector));
+        existing.setContentSelector(normalizeSelector(contentSelector));
+        existing.setDescriptionSelector(normalizeSelector(descriptionSelector));
+        existing.setImageSelector(normalizeSelector(imageSelector));
+        existing.setRemovalSelector(normalizeSelector(removalSelector));
         return sourceRepository.save(existing);
     }
 
@@ -65,5 +88,13 @@ public class SourceService {
             existing.setDeleted(true);
             sourceRepository.save(existing);
         }
+    }
+
+    private String normalizeSelector(String selector) {
+        if (selector == null) {
+            return null;
+        }
+        String trimmed = selector.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 }

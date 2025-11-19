@@ -34,6 +34,10 @@ public class Post {
     @JoinColumn(name = "category_id", nullable = true)
     private Category category;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "source_id")
+    private Source source;
+
     private String sourceUrl;
     private String tags;
     private LocalDateTime createdAt = LocalDateTime.now();

@@ -4,10 +4,12 @@ import com.example.springcrawler.model.Category;
 import com.example.springcrawler.model.Post;
 import com.example.springcrawler.repository.CategoryRepository;
 import com.example.springcrawler.repository.PostRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -24,6 +26,13 @@ public class PostService {
     // Lấy tất cả bài viết
     public List<Post> getAllPosts() {
         return postRepository.findAll();
+    }
+
+    public Page<Post> searchPosts(String keyword, Pageable pageable) {
+        if (StringUtils.hasText(keyword)) {
+            return postRepository.findByTitleContainingIgnoreCase(keyword.trim(), pageable);
+        }
+        return postRepository.findAll(pageable);
     }
 
     // Lấy bài viết theo ID

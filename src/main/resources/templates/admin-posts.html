@@ -9,10 +9,30 @@
 <div class="container">
     <h1>Quản lý bài viết</h1>
 
-    <!-- Nút thêm bài viết -->
-    <div class="button-container">
+    <!-- Thanh tìm kiếm, sắp xếp -->
+    <form class="filter-form" th:action="@{/admin/posts}" method="get">
+        <input type="text" name="search" placeholder="Tìm theo tiêu đề" th:value="${search}">
+        <select name="sort">
+            <option value="createdAt" th:selected="${sort == 'createdAt'}">Ngày tạo</option>
+            <option value="updatedAt" th:selected="${sort == 'updatedAt'}">Ngày cập nhật</option>
+            <option value="title" th:selected="${sort == 'title'}">Tiêu đề</option>
+            <option value="status" th:selected="${sort == 'status'}">Trạng thái</option>
+            <option value="id" th:selected="${sort == 'id'}">ID</option>
+        </select>
+        <select name="direction">
+            <option value="desc" th:selected="${direction == 'desc'}">Giảm dần</option>
+            <option value="asc" th:selected="${direction == 'asc'}">Tăng dần</option>
+        </select>
+        <select name="size">
+            <option value="10" th:selected="${size == 10}">10 / trang</option>
+            <option value="20" th:selected="${size == 20}">20 / trang</option>
+            <option value="50" th:selected="${size == 50}">50 / trang</option>
+        </select>
+        <input type="hidden" name="page" value="0"/>
+        <button type="submit" class="btn-save">Lọc</button>
+        <a th:href="@{/admin/posts}" class="btn-back-link">Làm mới</a>
         <a th:href="@{/admin/posts/add}" class="btn-save">Thêm bài viết</a>
-    </div>
+    </form>
 
     <!-- Bảng hiển thị bài viết -->
     <table class="admin-table">
@@ -29,13 +49,16 @@
         </tr>
         </thead>
         <tbody>
+        <tr th:if="${posts.size() == 0}">
+            <td colspan="8" style="text-align:center;">Không có bài viết nào</td>
+        </tr>
         <tr th:each="post : ${posts}">
             <td th:text="${post.id}"></td>
             <td th:text="${post.title}"></td>
             <td th:text="${post.slug}"></td>
-            <td th:text="${post.category.name}"></td>
+            <td th:text="${post.category != null ? post.category.name : '---'}"></td>
             <td th:text="${post.status}"></td>
-            <td th:text="${post.uniqueContent} ? 'Yes' : 'No'"></td>
+            <td th:text="${post.uniqueContent ? 'Yes' : 'No'}"></td>
             <td th:text="${post.createdAt}"></td>
             <td class="button-container">
                 <a th:href="@{/admin/posts/edit/{id}(id=${post.id})}" class="btn-save">Sửa</a>
@@ -45,6 +68,38 @@
         </tr>
         </tbody>
     </table>
+
+    <!-- Phân trang -->
+    <div class="pagination" th:if="${page != null and page.totalPages > 0}"
+         th:with="start=${page.number - 2 < 0 ? 0 : page.number - 2},
+                   end=${page.number + 2 >= page.totalPages ? page.totalPages - 1 : page.number + 2},
+                   startRange=${end - start < 4 ? (start - (4 - (end - start)) < 0 ? 0 : start - (4 - (end - start))) : start},
+                   endRange=${end - start < 4 ? (startRange + 4 >= page.totalPages ? page.totalPages - 1 : startRange + 4) : end}">
+        <span>Trang
+            <strong th:text="${page.number + 1}"></strong>
+            / <span th:text="${page.totalPages}"></span>
+        </span>
+
+        <div class="button-container">
+            <a th:if="${page.hasPrevious()}"
+               th:href="@{/admin/posts(page=${page.number - 1}, size=${size}, search=${search}, sort=${sort}, direction=${direction})}"
+               class="btn-back-link">« Trước</a>
+            <span th:if="${!page.hasPrevious()}" class="btn-back-link disabled">« Trước</span>
+
+            <span th:each="pageNum : ${#numbers.sequence(startRange, endRange)}">
+                <a th:if="${pageNum != page.number}"
+                   th:href="@{/admin/posts(page=${pageNum}, size=${size}, search=${search}, sort=${sort}, direction=${direction})}"
+                   class="btn-back-link"
+                   th:text="${pageNum + 1}"></a>
+                <span th:if="${pageNum == page.number}" class="btn-save" th:text="${pageNum + 1}"></span>
+            </span>
+
+            <a th:if="${page.hasNext()}"
+               th:href="@{/admin/posts(page=${page.number + 1}, size=${size}, search=${search}, sort=${sort}, direction=${direction})}"
+               class="btn-back-link">Sau »</a>
+            <span th:if="${!page.hasNext()}" class="btn-back-link disabled">Sau »</span>
+        </div>
+    </div>
 
     <!-- Nút quay lại admin -->
     <div class="button-container">

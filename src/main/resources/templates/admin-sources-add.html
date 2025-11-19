@@ -25,7 +25,39 @@
 
         <div class="form-group">
             <label for="url">URL nguồn:</label>
-            <input id="url" type="url" name="url" placeholder="https://example.com/feed" required>
+            <input id="url" type="url" name="url" placeholder="https://example.com/feed"
+                   th:value="${source.url}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="titleSelector">CSS tiêu đề (class, id hoặc selector):</label>
+            <input id="titleSelector" type="text" name="titleSelector" th:value="${source.titleSelector}"
+                   placeholder="VD: h1.article-title"/>
+        </div>
+
+        <div class="form-group">
+            <label for="contentSelector">CSS nội dung bài viết:</label>
+            <input id="contentSelector" type="text" name="contentSelector" th:value="${source.contentSelector}"
+                   placeholder="VD: article.fck_detail"/>
+        </div>
+
+        <div class="form-group">
+            <label for="descriptionSelector">CSS mô tả/ngắn gọn:</label>
+            <input id="descriptionSelector" type="text" name="descriptionSelector"
+                   th:value="${source.descriptionSelector}" placeholder="VD: p.description"/>
+        </div>
+
+        <div class="form-group">
+            <label for="imageSelector">CSS hình đại diện:</label>
+            <input id="imageSelector" type="text" name="imageSelector" th:value="${source.imageSelector}"
+                   placeholder="VD: .article-thumb img"/>
+        </div>
+
+        <div class="form-group">
+            <label for="removalSelector">CSS cần loại bỏ khỏi nội dung:</label>
+            <input id="removalSelector" type="text" name="removalSelector" th:value="${source.removalSelector}"
+                   placeholder="VD: .ads, .related-news"/>
+            <small>Dùng selector CSS để xóa các phần không mong muốn trước khi lưu nội dung.</small>
         </div>
 
         <div class="button-container">

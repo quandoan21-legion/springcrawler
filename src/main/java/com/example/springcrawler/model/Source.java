@@ -21,4 +21,19 @@ public class Source {
 
     @Column(nullable = false)
     private boolean deleted = false;
+
+    @Column(name = "title_selector")
+    private String titleSelector;
+
+    @Column(name = "content_selector")
+    private String contentSelector;
+
+    @Column(name = "description_selector")
+    private String descriptionSelector;
+
+    @Column(name = "image_selector")
+    private String imageSelector;
+
+    @Column(name = "removal_selector")
+    private String removalSelector;
 }

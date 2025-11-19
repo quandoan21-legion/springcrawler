@@ -3,6 +3,10 @@ package com.example.springcrawler.controllers.admin;
 import com.example.springcrawler.model.Post;
 import com.example.springcrawler.service.CategoryService;
 import com.example.springcrawler.service.PostService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +28,25 @@ public class AdminPostController {
     }
 
     @GetMapping("")
-    public String postsPage(Model model) {
-        model.addAttribute("posts", postService.getAllPosts());
+    public String postsPage(@RequestParam(name = "search", required = false) String search,
+                            @RequestParam(name = "page", defaultValue = "0") int page,
+                            @RequestParam(name = "size", defaultValue = "10") int size,
+                            @RequestParam(name = "sort", defaultValue = "createdAt") String sort,
+                            @RequestParam(name = "direction", defaultValue = "desc") String direction,
+                            Model model) {
+        int sanitizedPage = Math.max(page, 0);
+        int sanitizedSize = Math.min(Math.max(size, 5), 50);
+
+        Sort sortSpec = buildSort(sort, direction);
+        Pageable pageable = PageRequest.of(sanitizedPage, sanitizedSize, sortSpec);
+        Page<Post> postPage = postService.searchPosts(search, pageable);
+
+        model.addAttribute("posts", postPage.getContent());
+        model.addAttribute("page", postPage);
+        model.addAttribute("search", search);
+        model.addAttribute("size", sanitizedSize);
+        model.addAttribute("sort", resolveSortField(sort));
+        model.addAttribute("direction", resolveDirection(direction));
         return "admin-posts";
     }
 
@@ -137,5 +158,28 @@ public class AdminPostController {
     public String deletePost(@PathVariable Long id) {
         postService.deletePost(id);
         return "redirect:/admin/posts";
+    }
+
+    private Sort buildSort(String sortField, String direction) {
+        String field = resolveSortField(sortField);
+        Sort.Direction dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        return Sort.by(dir, field);
+    }
+
+    private String resolveSortField(String requested) {
+        if (requested == null) {
+            return "createdAt";
+        }
+        return switch (requested) {
+            case "title" -> "title";
+            case "status" -> "status";
+            case "id" -> "id";
+            case "updatedAt" -> "updatedAt";
+            default -> "createdAt";
+        };
+    }
+
+    private String resolveDirection(String requested) {
+        return "asc".equalsIgnoreCase(requested) ? "asc" : "desc";
     }
 }
