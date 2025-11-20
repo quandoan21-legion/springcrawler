@@ -52,6 +52,24 @@ public class PostService {
         return postRepository.findUncrawledPosts(Post.Status.UNCRAWL.name(), pageable);
     }
 
+    public List<Post> getPostsByStatus(Post.Status status) {
+        return postRepository.findByStatusOrderByCreatedAtDesc(status);
+    }
+
+    public Page<Post> getPostsByStatus(Post.Status status, String keyword, Long categoryId, Pageable pageable) {
+        boolean hasKeyword = StringUtils.hasText(keyword);
+        if (categoryId != null) {
+            if (hasKeyword) {
+                return postRepository.findByStatusAndCategoryIdAndTitleContainingIgnoreCase(status, categoryId, keyword.trim(), pageable);
+            }
+            return postRepository.findByStatusAndCategoryId(status, categoryId, pageable);
+        }
+
+        if (hasKeyword) {
+            return postRepository.findByStatusAndTitleContainingIgnoreCase(status, keyword.trim(), pageable);
+        }
+        return postRepository.findByStatus(status, pageable);
+    }
 
     // Tạo bài viết mới
     public Post createPost(String title, String content, Long categoryId) {
