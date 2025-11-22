@@ -1,0 +1,65 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+substitutions:
+  _ARTIFACT_REGION: us-central1
+  _REGION: us-central1
+  _REPOSITORY: spring-prj
+  _IMAGE: spring-prj
+  _SERVICE: spring-prj
+  _RUNTIME_ENV_VARS: ""
+  _SERVICE_ACCOUNT: ""
+  _VPC_CONNECTOR: ""
+
+steps:
+  - name: gcr.io/cloud-builders/mvn
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+        ./mvnw -B -DskipTests package
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - ${_ARTIFACT_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA
+      - .
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_ARTIFACT_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+        IMAGE_URI=${_ARTIFACT_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA
+        ENV_FLAG=""
+        SA_FLAG=""
+        VPC_FLAG=""
+        if [ -n "${_RUNTIME_ENV_VARS}" ]; then
+          ENV_FLAG="--set-env-vars ${_RUNTIME_ENV_VARS}"
+        fi
+        if [ -n "${_SERVICE_ACCOUNT}" ]; then
+          SA_FLAG="--service-account ${_SERVICE_ACCOUNT}"
+        fi
+        if [ -n "${_VPC_CONNECTOR}" ]; then
+          VPC_FLAG="--vpc-connector ${_VPC_CONNECTOR}"
+        fi
+        gcloud run deploy ${_SERVICE} \
+          --image ${IMAGE_URI} \
+          --region ${_REGION} \
+          --platform managed \
+          --allow-unauthenticated \
+          --port 8080 \
+          ${ENV_FLAG} \
+          ${SA_FLAG} \
+          ${VPC_FLAG}
+
+images:
+  - ${_ARTIFACT_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA

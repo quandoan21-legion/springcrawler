@@ -1,10 +1,9 @@
 package com.example.springcrawler.service;
 
-import com.example.springcrawler.model.Category;
-import com.example.springcrawler.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.t2404e.spring_prj.model.Category;
+import org.t2404e.spring_prj.repository.CategoryRepository;
 
 import java.util.List;
 import java.util.Optional;

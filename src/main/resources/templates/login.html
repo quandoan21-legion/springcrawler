@@ -12,8 +12,6 @@
     <h2>Đăng nhập</h2>
 
     <!-- Thông báo lỗi / thành công -->
-    <p th:if="${success}" class="message-box success" th:text="${success}"></p>
-    <p th:if="${error}" class="message-box error" th:text="${error}"></p>
     <p th:if="${param.error}" class="message-box error">
         Email hoặc mật khẩu không đúng!
     </p>
@@ -31,13 +29,7 @@
     </form>
 
     <p class="form-footer">Chưa có tài khoản? <a th:href="@{/api/v1/auth/register}">Đăng ký</a></p>
-    <!-- HTML -->
-    <div class="text-center mt-3">
-        <a href="#" class="forgot-password-link">Quên mật khẩu?</a>
-    </div>
-
 </div>
-
 
 
 </body>

@@ -1,9 +1,8 @@
 package com.example.springcrawler.repository;
 
-import com.example.springcrawler.model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
+import org.t2404e.spring_prj.model.Category;
 
 import java.util.Optional;
 
