@@ -1,13 +1,13 @@
 package com.example.springcrawler.service;
 
-import com.example.springcrawler.model.User;
-import com.example.springcrawler.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.example.springcrawler.model.User;
+import com.example.springcrawler.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,11 +25,13 @@ public class UserService implements UserDetailsService {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    // ========== UserDetailsService cho Spring Security ==========
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
+        // Chỉ cho login nếu đã active
         if (!user.isEnabled()) {
             throw new UsernameNotFoundException("Tài khoản chưa được kích hoạt. Vui lòng xác thực OTP trong email.");
         }
@@ -37,75 +39,40 @@ public class UserService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
-                .roles("ADMIN")
+                .roles("ADMIN") // Thay bằng role thực tế nếu cần
                 .build();
     }
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+
+    // ========== ĐĂNG KÝ NGƯỜI DÙNG (không dùng OTP, giữ nguyên nếu muốn) ==========
+    public String register(User user) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            return "Email đã tồn tại!";
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+        return "Đăng ký thành công!";
     }
 
     // ========== ĐĂNG KÝ NGƯỜI DÙNG VỚI OTP ==========
-    public boolean registerWithOTP(User user) {
-        Optional<User> existingUserOpt = userRepository.findByEmail(user.getEmail());
-
-        if (existingUserOpt.isPresent()) {
-            User existingUser = existingUserOpt.get();
-
-            if (existingUser.isEnabled()) {
-                return false; // đã active → không đăng ký lại
-            } else {
-                // chưa active
-                if (existingUser.getLastOtpSentTime() == null) {
-                    // Lần đầu chưa gửi OTP → gửi luôn
-                    sendNewOTP(existingUser);
-                } else {
-                    // Đã gửi OTP trước đó → giữ luồng resend
-                    resendOTP(existingUser.getEmail());
-                }
-                return true;
-            }
+    public String registerWithOTP(User user) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            return "Email đã tồn tại!";
         }
 
-        // Email chưa tồn tại → tạo mới
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setEnabled(false);
-        sendNewOTP(user); // gửi OTP lần đầu
-        userRepository.save(user);
 
-        return true;
-    }
-
-    // Gửi OTP mới, invalidate OTP cũ
-    private void sendNewOTP(User user) {
+        // Sinh OTP 6 chữ số
         String otp = String.valueOf(100000 + new Random().nextInt(900000));
         user.setOtp(otp);
-        user.setOtpExpiredTime(LocalDateTime.now().plusMinutes(1));
-        user.setLastOtpSentTime(LocalDateTime.now());
+        user.setOtpExpiredTime(LocalDateTime.now().plusMinutes(5));
+        user.setEnabled(false); // chưa active
+
         userRepository.save(user);
+
+        // Gửi OTP qua email
         emailService.sendOTPEmail(user.getEmail(), otp);
-    }
 
-    // ========== GỬI LẠI OTP ==========
-    public String resendOTP(String email) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        if (optionalUser.isEmpty()) return "Email không tồn tại!";
-
-        User user = optionalUser.get();
-
-        if (user.isEnabled()) return "Tài khoản đã được kích hoạt!";
-
-        // Kiểm tra thời gian gửi OTP gần nhất
-        if (user.getLastOtpSentTime() != null) {
-            long secondsSinceLast = java.time.Duration.between(user.getLastOtpSentTime(), LocalDateTime.now()).getSeconds();
-            if (secondsSinceLast < 60) {
-                long wait = 60 - secondsSinceLast;
-                return "Bạn phải chờ " + wait + " giây trước khi gửi lại OTP!";
-            }
-        }
-
-        // Gửi OTP mới → OTP cũ hết hiệu lực
-        sendNewOTP(user);
-        return "OTP mới đã được gửi tới email: " + user.getEmail();
+        return "Đăng ký thành công! OTP đã được gửi tới email: " + user.getEmail();
     }
 
     // ========== XÁC THỰC OTP ==========
@@ -114,23 +81,21 @@ public class UserService implements UserDetailsService {
         if (optionalUser.isEmpty()) return false;
 
         User user = optionalUser.get();
-
         if (user.getOtp() != null &&
                 user.getOtp().equals(otp) &&
                 LocalDateTime.now().isBefore(user.getOtpExpiredTime())) {
 
-            // OTP hợp lệ → kích hoạt user
+            // OTP hợp lệ → kích hoạt tài khoản
             user.setEnabled(true);
             user.setOtp(null);
             user.setOtpExpiredTime(null);
             userRepository.save(user);
             return true;
         }
-
-        return false; // OTP sai hoặc hết hạn
+        return false;
     }
 
-    // ===== QUẢN LÝ NGƯỜI DÙNG =====
+    // ========== QUẢN LÝ NGƯỜI DÙNG ==========
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -159,31 +124,4 @@ public class UserService implements UserDetailsService {
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
-    // Gửi OTP để reset password
-    public String sendResetOTP(String email) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        if(optionalUser.isEmpty()) return "Email không tồn tại!";
-
-        User user = optionalUser.get();
-        sendNewOTP(user); // generate OTP, lưu lastOtpSentTime
-
-        // Gửi email
-        emailService.sendEmail(user.getEmail(), "OTP đặt lại mật khẩu",
-                "Mã OTP của bạn là: " + user.getOtp());
-
-        return "OTP mới đã được gửi tới email của bạn!";
-    }
-
-    // Cập nhật mật khẩu mới
-    public void updatePassword(String email, String newPassword) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        optionalUser.ifPresent(user -> {
-            user.setPassword(passwordEncoder.encode(newPassword));
-            user.setOtp(null); // xóa OTP
-            user.setLastOtpSentTime(null); // reset thời gian gửi OTP
-            userRepository.save(user);
-        });
-    }
-
-
 }

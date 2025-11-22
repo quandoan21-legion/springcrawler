@@ -1,8 +1,7 @@
 package com.example.springcrawler.repository;
 
-import com.example.springcrawler.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-
+import com.example.springcrawler.model.User;
 
 import java.util.List;
 import java.util.Optional;
