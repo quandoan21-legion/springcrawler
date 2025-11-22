@@ -2,14 +2,16 @@ package com.example.springcrawler.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -38,7 +40,4 @@ public class User {
 
     // Thời điểm hết hạn OTP
     private LocalDateTime otpExpiredTime;
-
-    private LocalDateTime lastOtpSentTime;
-
 }
