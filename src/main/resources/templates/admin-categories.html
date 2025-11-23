@@ -31,6 +31,13 @@
         <a th:href="@{/admin}" class="btn-back-link">Quay lại</a>
     </div>
 
+    <!-- Search -->
+    <form th:action="@{/admin/categories}" method="get" class="search-bar">
+        <input type="text" name="keyword" placeholder="Tìm theo tên danh mục" th:value="${keyword}">
+        <input type="hidden" name="size" th:value="${size}">
+        <button type="submit">Tìm kiếm</button>
+    </form>
+
     <!-- Table -->
     <table class="admin-table">
         <thead>
@@ -43,6 +50,9 @@
         </tr>
         </thead>
         <tbody>
+        <tr th:if="${#lists.isEmpty(categories)}">
+            <td colspan="5" style="text-align: center;">Chưa có danh mục phù hợp.</td>
+        </tr>
         <tr th:each="category : ${categories}">
             <td th:text="${category.id}">1</td>
             <td th:text="${category.name}">Tên danh mục</td>
@@ -56,6 +66,21 @@
         </tr>
         </tbody>
     </table>
+
+    <div th:if="${categoryPage != null && categoryPage.totalPages > 1}" class="pagination">
+        <a th:if="${categoryPage.hasPrevious()}"
+           th:href="@{/admin/categories(page=${categoryPage.number - 1}, size=${size}, keyword=${keyword})}">&laquo; Trước</a>
+        <a th:unless="${categoryPage.hasPrevious()}" class="disabled">&laquo; Trước</a>
+
+        <a th:each="i : ${#numbers.sequence(0, categoryPage.totalPages - 1)}"
+           th:href="@{/admin/categories(page=${i}, size=${size}, keyword=${keyword})}"
+           th:classappend="${i == categoryPage.number} ? ' active'"
+           th:text="${i + 1}">1</a>
+
+        <a th:if="${categoryPage.hasNext()}"
+           th:href="@{/admin/categories(page=${categoryPage.number + 1}, size=${size}, keyword=${keyword})}">Sau &raquo;</a>
+        <a th:unless="${categoryPage.hasNext()}" class="disabled">Sau &raquo;</a>
+    </div>
 
 </div>
 

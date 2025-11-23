@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Collections;
 
 @Service
 public class PostService {
@@ -57,18 +58,22 @@ public class PostService {
     }
 
     public Page<Post> getPostsByStatus(Post.Status status, String keyword, Long categoryId, Pageable pageable) {
+        return getPostsByStatuses(Collections.singletonList(status), keyword, categoryId, pageable);
+    }
+
+    public Page<Post> getPostsByStatuses(List<Post.Status> statuses, String keyword, Long categoryId, Pageable pageable) {
         boolean hasKeyword = StringUtils.hasText(keyword);
         if (categoryId != null) {
             if (hasKeyword) {
-                return postRepository.findByStatusAndCategoryIdAndTitleContainingIgnoreCase(status, categoryId, keyword.trim(), pageable);
+                return postRepository.findByStatusInAndCategoryIdAndTitleContainingIgnoreCase(statuses, categoryId, keyword.trim(), pageable);
             }
-            return postRepository.findByStatusAndCategoryId(status, categoryId, pageable);
+            return postRepository.findByStatusInAndCategoryId(statuses, categoryId, pageable);
         }
 
         if (hasKeyword) {
-            return postRepository.findByStatusAndTitleContainingIgnoreCase(status, keyword.trim(), pageable);
+            return postRepository.findByStatusInAndTitleContainingIgnoreCase(statuses, keyword.trim(), pageable);
         }
-        return postRepository.findByStatus(status, pageable);
+        return postRepository.findByStatusIn(statuses, pageable);
     }
 
     // Tạo bài viết mới

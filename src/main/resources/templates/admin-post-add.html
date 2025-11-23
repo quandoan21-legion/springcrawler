@@ -30,74 +30,83 @@
     <!-- Form Thêm bài viết -->
     <div th:if="${error}" class="error" th:text="${error}"></div>
 
-    <form th:action="@{/admin/posts/add}" method="post" class="edit-form">
+    <form th:action="@{/admin/posts/add}" method="post" class="edit-form" th:object="${post}">
 
         <div class="form-group">
             <label for="title">Tiêu đề:</label>
-            <input id="title" type="text" name="title" placeholder="Tiêu đề" th:value="${post.title}" required>
+            <input id="title" type="text" th:field="*{title}" placeholder="Tiêu đề" required>
         </div>
 
         <div class="form-group">
             <label for="slug">Slug (URL thân thiện):</label>
-            <input id="slug" type="text" name="slug" placeholder="Slug (URL thân thiện)" th:value="${post.slug}">
+            <input id="slug" type="text" th:field="*{slug}" placeholder="Slug (URL thân thiện)">
         </div>
 
         <div class="form-group">
             <label for="shortDescription">Mô tả ngắn:</label>
-            <textarea id="shortDescription" name="shortDescription" placeholder="Mô tả ngắn" th:text="${post.shortDescription}"></textarea>
+            <textarea id="shortDescription" th:field="*{shortDescription}" placeholder="Mô tả ngắn"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="imageUrl">Ảnh đại diện:</label>
+            <input id="imageUrl" type="text" th:field="*{imgUrl}" placeholder="https://example.com/image.jpg">
         </div>
 
         <div class="form-group">
             <label for="content">Nội dung:</label>
-            <textarea id="content" name="content" placeholder="Nội dung" th:text="${post.content}" required></textarea>
+            <textarea id="content" th:field="*{content}" placeholder="Nội dung" required></textarea>
         </div>
 
         <div class="form-group">
             <label for="sourceUrl">URL gốc:</label>
-            <input id="sourceUrl" type="text" name="sourceUrl" placeholder="URL gốc" th:value="${post.sourceUrl}">
+            <input id="sourceUrl" type="text" th:field="*{sourceUrl}" placeholder="URL gốc">
         </div>
 
         <div class="form-group">
             <label for="tags">Tags:</label>
-            <input id="tags" type="text" name="tags" placeholder="Tags (ngăn cách bằng dấu ,)" th:value="${post.tags}">
+            <input id="tags" type="text" th:field="*{tags}" placeholder="Tags (ngăn cách bằng dấu ,)">
         </div>
 
         <div class="form-group">
             <label for="categoryId">Danh mục:</label>
             <select id="categoryId" name="categoryId" required>
-                <option value="" disabled selected>Chọn danh mục</option>
-                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                <option value="" disabled th:selected="${post.category == null}">Chọn danh mục</option>
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.id}"
+                        th:text="${cat.name}"
+                        th:selected="${post.category != null and post.category.id == cat.id}">
+                </option>
             </select>
         </div>
 
         <div class="form-group">
             <label for="status">Trạng thái:</label>
-            <select id="status" name="status">
-                <option th:value="DRAFT" th:selected="${post.status == T(org.t2404e.spring_prj.model.Post.Status).DRAFT}">Nháp</option>
-                <option th:value="PUBLISHED" th:selected="${post.status == T(org.t2404e.spring_prj.model.Post.Status).PUBLISHED}">Đã xuất bản</option>
-                <option th:value="DELETED" th:selected="${post.status == T(org.t2404e.spring_prj.model.Post.Status).DELETED}">Đã xóa</option>
+            <select id="status" th:field="*{status}">
+                <option th:value="${T(com.example.springcrawler.model.Post.Status).DRAFT}">Nháp</option>
+                <option th:value="${T(com.example.springcrawler.model.Post.Status).PUBLISHED}">Đã xuất bản</option>
+                <option th:value="${T(com.example.springcrawler.model.Post.Status).DELETED}">Đã xóa</option>
             </select>
         </div>
 
         <div class="form-group">
             <label>
-                <input type="checkbox" name="uniqueContent" th:checked="${post.uniqueContent}"> Đã generate unique content
+                <input type="checkbox" th:field="*{uniqueContent}"> Đã generate unique content
             </label>
         </div>
 
         <div class="form-group">
             <label for="seoTitle">SEO Title:</label>
-            <input id="seoTitle" type="text" name="seoTitle" placeholder="SEO Title" th:value="${post.seoTitle}">
+            <input id="seoTitle" type="text" th:field="*{seoTitle}" placeholder="SEO Title">
         </div>
 
         <div class="form-group">
             <label for="seoDescription">SEO Description:</label>
-            <textarea id="seoDescription" name="seoDescription" placeholder="SEO Description" th:text="${post.seoDescription}"></textarea>
+            <textarea id="seoDescription" th:field="*{seoDescription}" placeholder="SEO Description"></textarea>
         </div>
 
         <div class="form-group">
             <label for="seoKeywords">SEO Keywords:</label>
-            <input id="seoKeywords" type="text" name="seoKeywords" placeholder="SEO Keywords" th:value="${post.seoKeywords}">
+            <input id="seoKeywords" type="text" th:field="*{seoKeywords}" placeholder="SEO Keywords">
         </div>
 
         <div class="button-container">

@@ -42,7 +42,12 @@ public class UserController {
         Long categoryId = parseCategoryId(categoryParam);
         Sort sort = resolveSort(sortOption);
         Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1), sort);
-        Page<Post> postsPage = postService.getPostsByStatus(Post.Status.CRAWLED, keyword, categoryId, pageable);
+        Page<Post> postsPage = postService.getPostsByStatuses(
+                List.of(Post.Status.CRAWLED, Post.Status.PUBLISHED),
+                keyword,
+                categoryId,
+                pageable
+        );
         List<Integer> pageNumbers = buildPageWindow(postsPage, 5);
         List<Category> categories = categoryService.getAllCategories();
 
@@ -90,7 +95,7 @@ public class UserController {
     @GetMapping("/posts/{id}")
     public String showPostDetail(@PathVariable Long id, Model model) {
         Post post = postService.getPostById(id);
-        if (post == null || post.getStatus() != Post.Status.CRAWLED) {
+        if (post == null || (post.getStatus() != Post.Status.CRAWLED && post.getStatus() != Post.Status.PUBLISHED)) {
             return "redirect:/";
         }
 

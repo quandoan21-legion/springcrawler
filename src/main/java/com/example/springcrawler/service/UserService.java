@@ -3,11 +3,14 @@ package com.example.springcrawler.service;
 import com.example.springcrawler.model.User;
 import com.example.springcrawler.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -137,6 +140,14 @@ public class UserService implements UserDetailsService {
 
     public List<User> searchUsers(String keyword) {
         return userRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword);
+    }
+
+    public Page<User> getUsersPage(String keyword, Pageable pageable) {
+        if (StringUtils.hasText(keyword)) {
+            String trimmed = keyword.trim();
+            return userRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(trimmed, trimmed, pageable);
+        }
+        return userRepository.findAll(pageable);
     }
 
     public User getUserById(Long id) {

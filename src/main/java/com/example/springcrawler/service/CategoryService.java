@@ -3,8 +3,10 @@ package com.example.springcrawler.service;
 import com.example.springcrawler.model.Category;
 import com.example.springcrawler.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +20,13 @@ public class CategoryService {
     // Lấy tất cả danh mục
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
+    }
+
+    public Page<Category> getCategoriesPage(String keyword, Pageable pageable) {
+        if (StringUtils.hasText(keyword)) {
+            return categoryRepository.findByNameContainingIgnoreCase(keyword.trim(), pageable);
+        }
+        return categoryRepository.findAll(pageable);
     }
 
     // Lấy danh mục theo id

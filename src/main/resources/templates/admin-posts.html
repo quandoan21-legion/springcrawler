@@ -26,9 +26,16 @@
         </form>
     </div>
 
-    <!-- Nút thêm bài viết -->
-    <div class="button-container my-3">
+    <!-- Nút thêm và tìm kiếm -->
+    <div class="button-container my-3 flex-wrap">
         <a th:href="@{/admin/posts/add}" class="btn-save"><i class="fas fa-plus"></i> Thêm bài viết</a>
+        <form th:action="@{/admin/posts}" method="get" class="search-bar" style="margin-bottom:0;">
+            <input type="text" name="search" placeholder="Tìm theo tiêu đề" th:value="${search}">
+            <input type="hidden" name="size" th:value="${size}">
+            <input type="hidden" name="sort" th:value="${sort}">
+            <input type="hidden" name="direction" th:value="${direction}">
+            <button type="submit">Tìm kiếm</button>
+        </form>
     </div>
 
     <!-- Bảng hiển thị bài viết -->
@@ -47,6 +54,9 @@
             </tr>
             </thead>
             <tbody>
+            <tr th:if="${#lists.isEmpty(posts)}">
+                <td colspan="8" class="text-center">Không có bài viết nào.</td>
+            </tr>
             <tr th:each="post : ${posts}">
                 <td th:text="${post.id}"></td>
                 <td th:text="${post.title}"></td>
@@ -63,6 +73,21 @@
             </tr>
             </tbody>
         </table>
+    </div>
+
+    <div th:if="${postsPage != null && postsPage.totalPages > 1}" class="pagination">
+        <a th:if="${postsPage.hasPrevious()}"
+           th:href="@{/admin/posts(page=${postsPage.number - 1}, size=${size}, search=${search}, sort=${sort}, direction=${direction})}">&laquo; Trước</a>
+        <a th:unless="${postsPage.hasPrevious()}" class="disabled">&laquo; Trước</a>
+
+        <a th:each="i : ${#numbers.sequence(0, postsPage.totalPages - 1)}"
+           th:href="@{/admin/posts(page=${i}, size=${size}, search=${search}, sort=${sort}, direction=${direction})}"
+           th:classappend="${i == postsPage.number} ? ' active'"
+           th:text="${i + 1}">1</a>
+
+        <a th:if="${postsPage.hasNext()}"
+           th:href="@{/admin/posts(page=${postsPage.number + 1}, size=${size}, search=${search}, sort=${sort}, direction=${direction})}">Sau &raquo;</a>
+        <a th:unless="${postsPage.hasNext()}" class="disabled">Sau &raquo;</a>
     </div>
 
     <!-- Nút quay lại admin -->

@@ -33,4 +33,12 @@ public interface PostRepository extends JpaRepository<Post,Long> {
     Page<Post> findByStatusAndCategoryId(Post.Status status, Long categoryId, Pageable pageable);
 
     Page<Post> findByStatusAndCategoryIdAndTitleContainingIgnoreCase(Post.Status status, Long categoryId, String keyword, Pageable pageable);
+
+    Page<Post> findByStatusIn(List<Post.Status> statuses, Pageable pageable);
+
+    Page<Post> findByStatusInAndTitleContainingIgnoreCase(List<Post.Status> statuses, String keyword, Pageable pageable);
+
+    Page<Post> findByStatusInAndCategoryId(List<Post.Status> statuses, Long categoryId, Pageable pageable);
+
+    Page<Post> findByStatusInAndCategoryIdAndTitleContainingIgnoreCase(List<Post.Status> statuses, Long categoryId, String keyword, Pageable pageable);
 }
