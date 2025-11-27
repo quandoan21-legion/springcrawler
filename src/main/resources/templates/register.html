@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Đăng ký</title>
+    <title>Register</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -10,26 +10,29 @@
 <body>
 
 <div class="form-container">
-    <h2>Đăng ký</h2>
+    <h2>Create an account</h2>
 
-    <!-- Hiển thị message nếu có -->
+    <!-- Display message if present -->
     <p th:if="${message}" th:text="${message}" class="error-message"></p>
 
     <form th:action="@{/api/v1/auth/register}" method="post" th:object="${user}">
-        <label>Họ và tên</label>
-        <input type="text" th:field="*{fullName}" placeholder="Nhập họ và tên" required>
+        <label>Full name</label>
+        <input type="text" th:field="*{fullName}" placeholder="Enter your full name" required>
 
         <label>Email</label>
-        <input type="email" th:field="*{email}" placeholder="Nhập email" required>
+        <input type="email" th:field="*{email}" placeholder="Enter your email" required>
 
-        <label>Mật khẩu</label>
-        <input type="password" th:field="*{password}" placeholder="Nhập mật khẩu" required>
+        <label>Password</label>
+        <input type="password" th:field="*{password}" placeholder="Enter a password" required>
 
-        <button type="submit">Đăng ký</button>
+        <label>Confirm password</label>
+        <input type="password" name="confirmPassword" placeholder="Re-enter your password" required>
+
+        <button type="submit">Register</button>
     </form>
 
     <p class="form-footer">
-        Đã có tài khoản? <a th:href="@{/api/v1/auth}">Đăng nhập</a>
+        Already have an account? <a th:href="@{/api/v1/auth}">Sign in</a>
     </p>
 </div>
 

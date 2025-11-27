@@ -209,14 +209,39 @@ public class SourceCrawlService {
         if (imageElement == null) {
             return null;
         }
-        String src = imageElement.absUrl("src");
-        if (!StringUtils.hasText(src)) {
-            src = imageElement.attr("src");
+
+        String[] attributesToCheck = new String[]{
+                "src", "data-src", "data-original", "data-original-src", "data-srcset", "srcset"
+        };
+
+        for (String attr : attributesToCheck) {
+            String value = resolveImageAttribute(imageElement, attr);
+            if (StringUtils.hasText(value)) {
+                return value;
+            }
         }
-        if (!StringUtils.hasText(src)) {
-            src = imageElement.absUrl("data-src");
+
+        return null;
+    }
+
+    private String resolveImageAttribute(Element element, String attribute) {
+        if (!StringUtils.hasText(attribute)) {
+            return null;
         }
-        return StringUtils.hasText(src) ? src : null;
+        String value = element.absUrl(attribute);
+        if (!StringUtils.hasText(value)) {
+            value = element.attr(attribute);
+        }
+        if (!StringUtils.hasText(value)) {
+            return null;
+        }
+        if ("srcset".equals(attribute) || "data-srcset".equals(attribute)) {
+            String[] candidates = value.split(",");
+            if (candidates.length > 0) {
+                return candidates[0].trim().split("\\s+")[0];
+            }
+        }
+        return value;
     }
 
     private String extractDomain(String url) throws URISyntaxException {

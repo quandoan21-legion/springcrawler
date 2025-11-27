@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -33,8 +34,15 @@ public class RegistrationController {
 
     @PostMapping("/register")
     public String registerSubmit(@ModelAttribute User user,
+                                 @RequestParam("confirmPassword") String confirmPassword,
                                  Model model,
                                  RedirectAttributes redirectAttributes) {
+        if (user.getPassword() == null || !user.getPassword().equals(confirmPassword)) {
+            model.addAttribute("message", "Password and confirmation do not match.");
+            model.addAttribute("user", user);
+            return "register";
+        }
+
         boolean success = userService.registerWithOTP(user);
         logger.info("User email: {}", user.getEmail());
 
@@ -42,7 +50,7 @@ public class RegistrationController {
             redirectAttributes.addAttribute("email", user.getEmail());
             return "redirect:/api/v1/auth/verify-otp";
         } else {
-            model.addAttribute("message", "Email đã tồn tại hoặc đang chờ xác thực!");
+            model.addAttribute("message", "Email already exists or is pending verification.");
             model.addAttribute("user", user);
             return "register";
         }
