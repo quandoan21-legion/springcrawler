@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png"
+    th:href="@{/news-homepage-main/assets/images/favicon-32x32.png}">
+  <link rel="stylesheet" href="style.css" th:href="@{/news-homepage-main/style.css}">
+  <title th:text="${post != null ? post.title : 'News Detail'}">News Detail</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="app.js" defer th:src="@{/news-homepage-main/app.js}"></script>
+</head>
+
+<body>
+  <nav class="sm:flex sm:m-16 items-center flex justify-between m-10">
+    <div class="logo-wrapper basis-1/2">
+      <img src="./assets/images/logo.svg" alt="" th:src="@{/news-homepage-main/assets/images/logo.svg}">
+    </div>
+    <ul class="sm:flex basis-1/2 justify-end hidden">
+      <li class="mx-4"><a href="/" th:href="@{/}" class="hover:text-red-400">Home</a></li>
+      <li class="mx-4"><a href="/" th:href="@{/}" class="hover:text-red-400">Back to list</a></li>
+    </ul>
+    <div class="menu-wrapper">
+      <img src="./assets/images/icon-menu.svg" class="sm:hidden menubtn" alt=""
+        th:src="@{/news-homepage-main/assets/images/icon-menu.svg}">
+    </div>
+    <div class="hidden mobile-menu absolute top-0 right-0 bg-white h-full w-1/2 z-10">
+      <img src="./assets/images/icon-menu-close.svg" alt="" class="hidden closebtn block my-10 ms-auto mr-10"
+        th:src="@{/news-homepage-main/assets/images/icon-menu-close.svg}">
+      <ul class="mt-10 mx-10">
+        <li><a href="/" th:href="@{/}" class="block text-sm px-2 py-4 hover:bg-slate-200">Home</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section id="categories" class="m-10 sm:m-16 bg-slate-100 rounded-2xl px-6 py-4 shadow-inner border border-slate-200">
+    <div class="flex flex-col gap-4">
+      <div class="flex items-center justify-between">
+        <p class="text-xs uppercase tracking-widest text-slate-500 font-semibold">Categories</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <a th:each="category : ${categories}"
+          th:href="@{/(category=${category.id})}"
+          class="px-4 py-2 rounded-full border text-sm"
+          th:classappend="${selectedCategoryId != null and selectedCategoryId == category.id} ? ' bg-indigo-950 border-indigo-950 text-white' : ' border-slate-200 text-slate-600 hover:border-red-400 hover:text-red-400 transition'"
+          th:text="${category.name}">Category</a>
+        <span th:if="${#lists.isEmpty(categories)}" class="text-slate-500 text-sm">No categories available.</span>
+      </div>
+    </div>
+  </section>
+
+  <main class="m-10 sm:m-16 grid gap-10 md:grid-cols-3">
+    <article class="md:col-span-2 bg-white rounded-3xl shadow-lg overflow-hidden">
+      <div class="w-full h-80 bg-slate-200" th:if="${post != null}">
+        <img th:if="${post.imgUrl != null}" th:src="${post.imgUrl}" alt="" class="w-full h-full object-cover">
+        <img th:if="${post.imgUrl == null}" src="./assets/images/image-web-3-desktop.jpg"
+          th:src="@{/news-homepage-main/assets/images/image-web-3-desktop.jpg}" alt="" class="w-full h-full object-cover">
+      </div>
+      <div class="p-8 flex flex-col gap-6" th:if="${post != null}">
+        <div class="flex flex-col gap-3">
+          <p class="text-xs uppercase tracking-widest text-yellow-500 font-semibold">Featured story</p>
+          <h1 class="text-4xl sm:text-5xl font-black leading-tight" th:text="${post.title}">Post title</h1>
+          <div class="flex flex-wrap gap-4 text-sm text-slate-500 uppercase tracking-wide">
+            <span th:text="${post.category != null ? post.category.name : 'Uncategorized'}">Category</span>
+            <span th:text="${post.source != null && post.source.category != null ? post.source.category.name : (post.source != null && post.source.url != null ? post.source.url : 'Unknown source')}">Source</span>
+            <span th:text="${post.createdAt != null ? #temporals.format(post.createdAt, 'dd MMM yyyy') : ''}">Date</span>
+          </div>
+        </div>
+        <p class="text-lg text-slate-600" th:text="${post.shortDescription != null ? post.shortDescription : 'No description available for this story.'}">
+          Short description</p>
+        <div class="prose max-w-none text-slate-700 leading-relaxed" th:utext="${post.content}">
+          <p>Post content...</p>
+        </div>
+        <div class="flex flex-wrap gap-3 text-xs uppercase tracking-wide text-slate-500" th:if="${post.tags != null}">
+          <span class="px-3 py-1 rounded-full border border-slate-200" th:each="tag : ${#strings.arraySplit(post.tags, ',')}"
+            th:text="${tag}">Tag</span>
+        </div>
+      </div>
+    </article>
+    <aside class="bg-indigo-950 text-white rounded-3xl p-8 flex flex-col gap-6">
+      <div>
+        <p class="text-xs uppercase tracking-widest text-yellow-400 font-semibold">Source</p>
+        <h3 class="text-2xl font-bold" th:text="${post != null && post.source != null && post.source.category != null ? post.source.category.name : (post != null && post.source != null && post.source.url != null ? post.source.url : 'Unknown')}">Source
+          Name</h3>
+        <a th:if="${post != null && post.sourceUrl != null}" th:href="${post.sourceUrl}" target="_blank"
+          class="mt-3 inline-block text-sm text-yellow-300 underline">Visit source</a>
+      </div>
+      <div>
+        <p class="text-xs uppercase tracking-widest text-yellow-400 font-semibold">Original crawl URL</p>
+        <a th:if="${post != null && post.crawlUrl != null}" th:href="${post.crawlUrl}" target="_blank"
+          class="break-words text-sm text-slate-200 underline">crawl url</a>
+        <p th:if="${post == null || post.crawlUrl == null}" class="text-sm text-slate-300">Unavailable</p>
+      </div>
+      <div>
+        <p class="text-xs uppercase tracking-widest text-yellow-400 font-semibold">Published</p>
+        <p class="text-sm text-slate-200"
+          th:text="${post != null && post.publishedAt != null ? #temporals.format(post.publishedAt, 'dd MMM yyyy - HH:mm') : 'Not published yet'}">
+          Date</p>
+      </div>
+      <div class="mt-auto">
+        <a href="/" th:href="@{/}"
+          class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white text-indigo-950 font-semibold uppercase text-sm tracking-wide hover:bg-yellow-300 transition">
+          ← Back to homepage
+        </a>
+      </div>
+    </aside>
+  </main>
+</body>
+
+</html>

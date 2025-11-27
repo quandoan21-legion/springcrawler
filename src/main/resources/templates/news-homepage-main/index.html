@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png"
+    th:href="@{/news-homepage-main/assets/images/favicon-32x32.png}">
+  <link rel="stylesheet" href="style.css" th:href="@{/news-homepage-main/style.css}">
+
+  <title>Frontend Mentor | News homepage</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="app.js" defer th:src="@{/news-homepage-main/app.js}"></script>
+  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+  <style>
+    .attribution {
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .attribution a {
+      color: hsl(228, 45%, 44%);
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="sm:flex sm:m-16 items-center flex justify-between m-10">
+    <div class="logo-wrapper basis-1/2">
+      <img src="./assets/images/logo.svg" alt="" th:src="@{/news-homepage-main/assets/images/logo.svg}">
+    </div>
+    <ul class="sm:flex basis-1/2 justify-end hidden">
+      <li class="mx-4"><a href="/" th:href="@{/}" class="hover:text-red-400">Home</a></li>
+      <li class="mx-4"><a href="#crawled-posts" class="hover:text-red-400">New</a></li>
+      <li class="mx-4"><a href="#popular" class="hover:text-red-400">Popular</a></li>
+      <li class="mx-4"><a href="#trending" class="hover:text-red-400">Trending</a></li>
+      <li class="mx-4"><a href="#categories" class="hover:text-red-400">Categories</a></li>
+    </ul>
+    <div class="menu-wrapper">
+      <img src="./assets/images/icon-menu.svg" class="sm:hidden menubtn" alt=""
+        th:src="@{/news-homepage-main/assets/images/icon-menu.svg}">
+    </div>
+    <div class="hidden mobile-menu absolute top-0 right-0 bg-white h-full w-1/2 z-10">
+      <img src="./assets/images/icon-menu-close.svg" alt="" class="hidden closebtn block my-10 ms-auto mr-10"
+        th:src="@{/news-homepage-main/assets/images/icon-menu-close.svg}">
+      <ul class="mt-10 mx-10">
+        <li><a href="/" th:href="@{/}" class="block text-sm px-2 py-4 hover:bg-slate-200">Home</a></li>
+        <li><a href="#crawled-posts" class="block text-sm px-2 py-4 ">New</a></li>
+        <li><a href="#popular" class="block text-sm px-2 py-4 ">Popular</a></li>
+        <li><a href="#trending" class="block text-sm px-2 py-4 ">Trending</a>
+        </li>
+        <li><a href="#categories" class="block text-sm px-2 py-4 ">Categories</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section id="categories" class="m-10 sm:m-16 bg-slate-100 rounded-2xl px-6 py-4 shadow-inner border border-slate-200">
+    <div class="flex flex-col gap-4">
+      <div class="flex items-center justify-between">
+        <p class="text-xs uppercase tracking-widest text-slate-500 font-semibold">Browse by category</p>
+        <a th:href="@{/(sort=${sortOption}, q=${keyword})}"
+          class="text-xs text-red-400 font-semibold uppercase tracking-widest hover:text-indigo-950 transition">View all</a>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <a th:each="category : ${categories}"
+          th:href="@{/(category=${category.id}, sort=${sortOption}, q=${keyword})}"
+          class="px-4 py-2 rounded-full border text-sm"
+          th:classappend="${selectedCategoryId != null and selectedCategoryId == category.id} ? ' bg-indigo-950 border-indigo-950 text-white' : ' border-slate-200 text-slate-600 hover:border-red-400 hover:text-red-400 transition'"
+          th:text="${category.name}">Category</a>
+        <span th:if="${#lists.isEmpty(categories)}" class="text-slate-500 text-sm">No categories available.</span>
+      </div>
+    </div>
+  </section>
+
+  
+
+
+
+  <main class="md:grid grid-cols-3 md:mx-16 gap-4 items-center">
+    <div class="img-wrapper mx-10 my-4 sm:mx-16 md:m-0 md:col-start-1 col-end-3 row-start-1 row-end-2">
+      <img src="./assets/images/image-web-3-desktop.jpg" class="hidden sm:block object-fill h-full" alt=""
+        th:src="@{/news-homepage-main/assets/images/image-web-3-desktop.jpg}">
+      <img src="./assets/images/image-web-3-mobile.jpg" class="sm:hidden" alt=""
+        th:src="@{/news-homepage-main/assets/images/image-web-3-mobile.jpg}">
+    </div>
+    <div class="heading-wrapper mx-10 my-4 text-5xl font-black sm:mx-16 md:mx-0 md:row-start-2 row-end-4 md:text-6xl">
+      <h1>The Bright <br> Future of Web  <br> 3.0</h1>
+    </div>
+    <div class="text-wrapper mx-10 my-4 sm:mx-16 md:row-start-2 row-end-3 md:mx-0">
+      <p>We dive into the next evolution of the web that claims to put the power of the platforms back into the hands of
+        the people.But is it really fulfilling its promise?</p>
+    </div>
+    <div class="button-wrapper mx-10 my-4 sm:mx-16 md:row-start-3 row-end-4 md:mx-0">
+      <button class="px-6 py-4 bg-red-400 text-slate-50 tracking-widest font-bold hover:bg-indigo-950">READ MORE</button>
+    </div>
+    <section class="bg-indigo-950 text-slate-50 m-10 px-8 py-4 sm:m-16 md:row-start-1 row-end-4 md:m-0 md:h-full">
+      <h1 class="text-3xl font-semibold my-4 text-yellow-300">New</h1>
+      <div class="flex flex-col">
+        <div class="py-8 border-b border-slate-50">
+          <h3 class="font-bold hover:text-yellow-300 cursor-pointer">Hydrogen VS Electric Cars</h3>
+          <p class="text-sm text-slate-400">Will hydrogen-fueled cars ever catch up to EVs?</p>
+        </div>
+        <div class="py-8 border-b border-slate-50">
+          <h3 class="font-bold hover:text-yellow-300 cursor-pointer">The Downsides of AI Artistry</h3>
+          <p class="text-sm text-slate-400">What are the possible adverse effects of on-demand AI image generation?</p>
+        </div>
+        <div class="py-8">
+          <h3 class="font-bold hover:text-yellow-300 cursor-pointer">Is VC Funding Drying Up?</h3>
+          <p class="text-sm text-slate-400">Private funding by VC firms is down 50% YOY. We take a look at what that
+            means.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="m-10 sm:m-16 md:flex items-center justify-center">
+    <div class="flex items-center">
+      <div class="w-1/3">
+        <img src="./assets/images/image-retro-pcs.jpg" alt=""
+          th:src="@{/news-homepage-main/assets/images/image-retro-pcs.jpg}">
+      </div>
+      <div class="w-2/3 flex flex-col px-3">
+        <h1 class="text-4xl font-bold text-slate-300">01</h1>
+        <h4 class="font-black text-lg cursor-pointer hover:text-red-400">Reviving Retro PCs</h4>
+        <p class="text-sm text-slate-500">What happens when old PCs are given modern upgrades?</p>
+      </div>
+    </div>
+    <div class="flex my-6 items-center md:my-0 md:h-full">
+      <div class="w-1/3 h-full">
+        <img src="./assets/images/image-top-laptops.jpg" alt=""
+          th:src="@{/news-homepage-main/assets/images/image-top-laptops.jpg}">
+      </div>
+      <div class="w-2/3 flex flex-col px-3">
+        <h1 class="text-4xl font-bold text-slate-300">02</h1>
+        <h4 class="font-black text-lg cursor-pointer hover:text-red-400">Top 10 Laptops of 2022</h4>
+        <p class="text-sm text-slate-500">Our best picks for various needs and budgets</p>
+      </div>
+    </div>
+    <div class="flex items-center">
+      <div class="w-1/3">
+        <img src="./assets/images/image-gaming-growth.jpg" alt=""
+          th:src="@{/news-homepage-main/assets/images/image-gaming-growth.jpg}">
+      </div>
+      <div class="w-2/3 flex flex-col px-3">
+        <h1 class="text-4xl font-bold text-slate-300">03</h1>
+        <h4 class="font-black text-lg cursor-pointer hover:text-red-400">The Growth of Gaming</h4>
+        <p class="text-sm text-slate-500">How the pandemic has sparked fresh opportunities</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="crawled-posts" class="m-10 sm:m-16">
+    <div class="flex flex-col gap-6 bg-white shadow-lg rounded-md p-8">
+      <div class="flex flex-col gap-2">
+        <p class="text-sm font-semibold tracking-widest text-yellow-500 uppercase">All Crawled Posts</p>
+        <form th:action="@{/}" method="get"
+          class="flex flex-col sm:flex-row gap-4 bg-slate-100 rounded-xl p-6 shadow-inner border border-slate-200">
+          <div class="flex-1 flex flex-col gap-4 sm:flex-row">
+            <div class="flex-1">
+              <label for="search" class="text-xs uppercase tracking-widest text-slate-500 font-semibold">Search crawled
+                posts</label>
+              <div
+                class="mt-2 flex items-center gap-3 bg-white rounded-full px-6 py-3 border border-transparent focus-within:border-red-400 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18.5a7.5 7.5 0 006.15-3.85z" />
+                </svg>
+                <input id="search" name="q" type="text" placeholder="Search by title..."
+                  class="flex-1 bg-transparent focus:outline-none text-slate-800"
+                  th:value="${keyword}">
+              </div>
+            </div>
+            <div class="sm:w-60">
+              <label for="sort" class="text-xs uppercase tracking-widest text-slate-500 font-semibold">Sort by</label>
+              <select id="sort" name="sort"
+                class="mt-2 w-full rounded-full px-6 py-3 border border-transparent bg-white focus:border-red-400 focus:outline-none text-slate-700">
+                <option value="latest" th:selected="${sortOption == null or sortOption == 'latest'}">Newest first</option>
+                <option value="oldest" th:selected="${sortOption == 'oldest'}">Oldest first</option>
+              </select>
+            </div>
+            <div class="sm:w-60">
+              <label for="categorySelect" class="text-xs uppercase tracking-widest text-slate-500 font-semibold">Category</label>
+              <select id="categorySelect" name="category"
+                class="mt-2 w-full rounded-full px-6 py-3 border border-transparent bg-white focus:border-red-400 focus:outline-none text-slate-700">
+                <option value="" th:selected="${selectedCategoryId == null}">All categories</option>
+                <option th:each="category : ${categories}" th:value="${category.id}"
+                  th:selected="${selectedCategoryId != null and selectedCategoryId == category.id}"
+                  th:text="${category.name}">Category Name</option>
+              </select>
+            </div>
+          </div>
+      <div class="flex items-end gap-3">
+        <input type="hidden" name="size" th:value="${postsPage != null ? postsPage.size : 6}">
+        <button type="submit"
+          class="px-8 py-3 rounded-full bg-red-400 text-white font-semibold tracking-wide hover:bg-indigo-950 transition">Search</button>
+        <a th:if="${keyword != null && !keyword.isEmpty()}"
+          th:href="@{/(category=${selectedCategoryId}, sort=${sortOption})}"
+          class="px-6 py-3 rounded-full bg-slate-200 text-slate-700 font-semibold tracking-wide hover:bg-slate-300 transition">Clear</a>
+      </div>
+    </form>
+        <h2 class="text-3xl font-black">Latest news from every crawler</h2>
+        <p class="text-slate-500">Every record below is pulled directly from the crawler and filtered by the
+          <code>CRAWLED</code> status.</p>
+      </div>
+      <div th:if="${#lists.isEmpty(posts)}" class="p-6 border border-dashed border-slate-200 rounded-md text-slate-500">
+        There are no crawled posts yet. Start a crawl job and check back soon.
+      </div>
+      <div th:each="post, iter : ${posts}"
+        class="flex flex-col sm:flex-row gap-4 py-6 border-b border-slate-100 last:border-none">
+        <div class="text-4xl font-black text-slate-300 sm:w-1/6">
+          <span th:text="${iter.count < 10 ? '0' + iter.count : iter.count}">01</span>
+        </div>
+        <div class="sm:w-5/6 flex flex-col gap-2">
+          <div class="w-full h-48 rounded-2xl overflow-hidden bg-slate-100">
+            <img th:if="${post.imgUrl != null && !#strings.isEmpty(post.imgUrl)}"
+                 th:src="${post.imgUrl}"
+                 alt=""
+                 class="w-full h-full object-cover">
+            <img th:unless="${post.imgUrl != null && !#strings.isEmpty(post.imgUrl)}"
+                 src="./assets/images/image-web-3-desktop.jpg"
+                 th:src="@{/news-homepage-main/assets/images/image-web-3-desktop.jpg}"
+                 alt=""
+                 class="w-full h-full object-cover">
+          </div>
+          <a th:href="@{/posts/{id}(id=${post.id})}"
+            class="text-xl font-bold hover:text-red-400 transition-colors cursor-pointer block">
+            <span th:text="${post.title}">Crawled post title</span>
+          </a>
+          <p class="text-sm text-slate-600" th:text="${post.shortDescription != null ? post.shortDescription : 'No short description available for this post.'}">
+            Post description...</p>
+          <div class="flex flex-wrap gap-4 text-xs text-slate-500 uppercase tracking-wide">
+            <span th:text="${post.category != null ? post.category.name : 'Uncategorized'}">Category</span>
+            <span th:text="${post.source != null && post.source.category != null ? post.source.category.name : (post.source != null && post.source.url != null ? post.source.url : 'Unknown source')}">Source</span>
+            <span th:text="${post.createdAt != null ? #temporals.format(post.createdAt, 'dd MMM yyyy') : ''}">Date</span>
+          </div>
+        </div>
+      </div>
+      <div th:if="${postsPage != null && postsPage.totalPages > 1}"
+        class="flex flex-col gap-4 pt-6 border-t border-slate-100">
+        <div class="flex justify-between items-center text-sm text-slate-500">
+          <div>
+            Page <span class="font-semibold" th:text="${postsPage.number + 1}">1</span> of
+            <span class="font-semibold" th:text="${postsPage.totalPages}">5</span>
+          </div>
+          <div class="flex gap-2">
+            <a th:if="${postsPage.hasPrevious()}"
+              th:href="@{/(page=${postsPage.number - 1},size=${postsPage.size},q=${keyword},sort=${sortOption},category=${selectedCategoryId})}"
+              class="px-4 py-2 rounded-full border border-slate-200 hover:border-red-400 hover:text-red-400 transition">Previous</a>
+            <span th:unless="${postsPage.hasPrevious()}"
+              class="px-4 py-2 rounded-full border border-slate-100 text-slate-300 cursor-not-allowed">Previous</span>
+            <a th:if="${postsPage.hasNext()}"
+              th:href="@{/(page=${postsPage.number + 1},size=${postsPage.size},q=${keyword},sort=${sortOption},category=${selectedCategoryId})}"
+              class="px-4 py-2 rounded-full border border-slate-200 hover:border-red-400 hover:text-red-400 transition">Next</a>
+            <span th:unless="${postsPage.hasNext()}"
+              class="px-4 py-2 rounded-full border border-slate-100 text-slate-300 cursor-not-allowed">Next</span>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <a th:each="pageNum : ${pageNumbers}"
+            th:href="@{/(page=${pageNum},size=${postsPage.size},q=${keyword},sort=${sortOption},category=${selectedCategoryId})}"
+            class="px-4 py-2 rounded-full border"
+            th:classappend="${pageNum == postsPage.number} ? ' bg-indigo-950 border-indigo-950 text-white' : ' border-slate-200 text-slate-600 hover:border-red-400 hover:text-red-400 transition'"
+            th:text="${pageNum + 1}">1</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
+  <link rel="stylesheet" href="style.css">
+
+  <title>Frontend Mentor | News homepage</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="app.js" defer></script>
+  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+  <style>
+    .attribution {
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .attribution a {
+      color: hsl(228, 45%, 44%);
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="sm:flex sm:m-16 items-center flex justify-between m-10">
+    <div class="logo-wrapper basis-1/2">
+      <img src="./assets/images/logo.svg" alt="">
+    </div>
+    <ul class="sm:flex basis-1/2 justify-end hidden">
+      <li class="mx-4"><a href="" class="hover:text-red-400">Home</a></li>
+      <li class="mx-4"><a href="" class="hover:text-red-400">New</a></li>
+      <li class="mx-4"><a href="" class="hover:text-red-400">Popular</a></li>
+      <li class="mx-4"><a href="" class="hover:text-red-400">Trending</a></li>
+      <li class="mx-4"><a href="" class="hover:text-red-400">Categories</a></li>
+    </ul>
+    <div class="menu-wrapper">
+      <img src="./assets/images/icon-menu.svg" class="sm:hidden menubtn" alt="">
+    </div>
+    <div class="hidden mobile-menu absolute top-0 right-0 bg-white h-full w-1/2 z-10">
+      <img src="./assets/images/icon-menu-close.svg" alt="" class="hidden closebtn block my-10 ms-auto mr-10">
+      <ul class="mt-10 mx-10">
+        <li><a href="index.html" class="block text-sm px-2 py-4 hover:bg-slate-200">Home</a></li>
+        <li><a href="#new" class="block text-sm px-2 py-4 ">New</a></li>
+        <li><a href="#popular" class="block text-sm px-2 py-4 ">Popular</a></li>
+        <li><a href="#trending" class="block text-sm px-2 py-4 ">Trending</a>
+        </li>
+        <li><a href="#categories" class="block text-sm px-2 py-4 ">Categories</a></li>
+      </ul>
+    </div>
+  </nav>
+
+
+
+  <main class="md:grid grid-cols-3 md:mx-16 gap-4 items-center">
+    <div class="img-wrapper mx-10 my-4 sm:mx-16 md:m-0 md:col-start-1 col-end-3 row-start-1 row-end-2">
+      <img src="./assets/images/image-web-3-desktop.jpg" class="hidden sm:block object-fill h-full" alt="">
+      <img src="./assets/images/image-web-3-mobile.jpg" class="sm:hidden" alt="">
+    </div>
+    <div class="heading-wrapper mx-10 my-4 text-5xl font-black sm:mx-16 md:mx-0 md:row-start-2 row-end-4 md:text-6xl">
+      <h1>The Bright <br> Future of Web  <br> 3.0</h1>
+    </div>
+    <div class="text-wrapper mx-10 my-4 sm:mx-16 md:row-start-2 row-end-3 md:mx-0">
+      <p>We dive into the next evolution of the web that claims to put the power of the platforms back into the hands of
+        the people.But is it really fulfilling its promise?</p>
+    </div>
+    <div class="button-wrapper mx-10 my-4 sm:mx-16 md:row-start-3 row-end-4 md:mx-0">
+      <button class="px-6 py-4 bg-red-400 text-slate-50 tracking-widest font-bold hover:bg-indigo-950">READ MORE</button>
+    </div>
+    <section class="bg-indigo-950 text-slate-50 m-10 px-8 py-4 sm:m-16 md:row-start-1 row-end-4 md:m-0 md:h-full">
+      <h1 class="text-3xl font-semibold my-4 text-yellow-300">New</h1>
+      <div class="flex flex-col">
+        <div class="py-8 border-b border-slate-50">
+          <h3 class="font-bold hover:text-yellow-300 cursor-pointer">Hydrogen VS Electric Cars</h3>
+          <p class="text-sm text-slate-400">Will hydrogen-fueled cars ever catch up to EVs?</p>
+        </div>
+        <div class="py-8 border-b border-slate-50">
+          <h3 class="font-bold hover:text-yellow-300 cursor-pointer">The Downsides of AI Artistry</h3>
+          <p class="text-sm text-slate-400">What are the possible adverse effects of on-demand AI image generation?</p>
+        </div>
+        <div class="py-8">
+          <h3 class="font-bold hover:text-yellow-300 cursor-pointer">Is VC Funding Drying Up?</h3>
+          <p class="text-sm text-slate-400">Private funding by VC firms is down 50% YOY. We take a look at what that
+            means.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="m-10 sm:m-16 md:flex items-center justify-center">
+    <div class="flex items-center">
+      <div class="w-1/3">
+        <img src="./assets/images/image-retro-pcs.jpg" alt="">
+      </div>
+      <div class="w-2/3 flex flex-col px-3">
+        <h1 class="text-4xl font-bold text-slate-300">01</h1>
+        <h4 class="font-black text-lg cursor-pointer hover:text-red-400">Reviving Retro PCs</h4>
+        <p class="text-sm text-slate-500">What happens when old PCs are given modern upgrades?</p>
+      </div>
+    </div>
+    <div class="flex my-6 items-center md:my-0 md:h-full">
+      <div class="w-1/3 h-full">
+        <img src="./assets/images/image-top-laptops.jpg" alt="">
+      </div>
+      <div class="w-2/3 flex flex-col px-3">
+        <h1 class="text-4xl font-bold text-slate-300">02</h1>
+        <h4 class="font-black text-lg cursor-pointer hover:text-red-400">Top 10 Laptops of 2022</h4>
+        <p class="text-sm text-slate-500">Our best picks for various needs and budgets</p>
+      </div>
+    </div>
+    <div class="flex items-center">
+      <div class="w-1/3">
+        <img src="./assets/images/image-gaming-growth.jpg" alt="">
+      </div>
+      <div class="w-2/3 flex flex-col px-3">
+        <h1 class="text-4xl font-bold text-slate-300">03</h1>
+        <h4 class="font-black text-lg cursor-pointer hover:text-red-400">The Growth of Gaming</h4>
+        <p class="text-sm text-slate-500">How the pandemic has sparked fresh opportunities</p>
+      </div>
+    </div>
+  </section>
+</body>
+
+</html>
