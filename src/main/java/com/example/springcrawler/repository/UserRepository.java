@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-//    tim user bang email
+//    find user by email
     Optional<User> findByEmail(String Email);
-    // Kiểm tra email đã tồn tại chưa
+    // Check if the email already exists
     boolean existsByEmail(String email);
     List<User> findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String fullName, String email);
 

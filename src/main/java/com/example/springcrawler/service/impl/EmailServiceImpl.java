@@ -26,14 +26,14 @@ public class EmailServiceImpl implements EmailService {
 
             mailSender.send(message);
         } catch (MessagingException e) {
-            throw new RuntimeException("Không thể gửi email", e);
+            throw new RuntimeException("Unable to send email", e);
         }
     }
 
     @Override
     public void sendOTPEmail(String toEmail, String otp) {
-        String subject = "Mã OTP xác thực của bạn";
-        String content = "<h3>Mã OTP của bạn là:</h3><h2>" + otp + "</h2>";
+        String subject = "Your verification OTP code";
+        String content = "<h3>Your OTP code is:</h3><h2>" + otp + "</h2>";
         sendEmail(toEmail, subject, content);
     }
 }

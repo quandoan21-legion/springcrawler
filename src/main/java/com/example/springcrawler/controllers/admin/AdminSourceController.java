@@ -51,7 +51,7 @@ public class AdminSourceController {
                 descriptionSelector, imageSelector, removalSelector);
 
         if (!StringUtils.hasText(url)) {
-            model.addAttribute("error", "URL không được để trống");
+            model.addAttribute("error", "URL must not be empty.");
             model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("source", formSource);
             return "admin-sources-add";
@@ -97,7 +97,7 @@ public class AdminSourceController {
         }
 
         if (!StringUtils.hasText(url)) {
-            model.addAttribute("error", "URL không được để trống");
+            model.addAttribute("error", "URL must not be empty.");
             Source draft = buildSourceDraft(id, categoryId, url, titleSelector, contentSelector,
                     descriptionSelector, imageSelector, removalSelector);
             if (draft.getCategory() == null) {
@@ -111,7 +111,7 @@ public class AdminSourceController {
         Source updated = sourceService.updateSource(id, categoryId, url.trim(), titleSelector,
                 contentSelector, descriptionSelector, imageSelector, removalSelector);
         if (updated == null) {
-            model.addAttribute("error", "Nguồn không tồn tại hoặc danh mục không hợp lệ");
+            model.addAttribute("error", "Source does not exist or the category is invalid.");
             Source draft = buildSourceDraft(id, categoryId, url, titleSelector, contentSelector,
                     descriptionSelector, imageSelector, removalSelector);
             if (draft.getCategory() == null) {

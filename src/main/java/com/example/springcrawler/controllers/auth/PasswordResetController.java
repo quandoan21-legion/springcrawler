@@ -41,7 +41,7 @@ public class PasswordResetController {
             redirectAttributes.addAttribute("email", email);
             return "redirect:/api/v1/auth/reset-password";
         } else {
-            redirectAttributes.addFlashAttribute("message", "Email không tồn tại!");
+            redirectAttributes.addFlashAttribute("message", "Email does not exist.");
             return "redirect:/api/v1/auth/forgot-password";
         }
     }
@@ -63,12 +63,12 @@ public class PasswordResetController {
         boolean otpValid = userService.verifyOTP(email, otp);
         if (otpValid) {
             userService.updatePassword(email, newPassword);
-            redirectAttributes.addFlashAttribute("success", "Mật khẩu đã được đặt lại thành công! Bạn có thể đăng nhập.");
+            redirectAttributes.addFlashAttribute("success", "Password reset successfully! You can sign in now.");
             return "redirect:/api/v1/auth";
         } else {
             model.addAttribute("secondsRemaining", secondsRemaining(email));
             model.addAttribute("email", email);
-            model.addAttribute("message", "OTP không hợp lệ hoặc đã hết hạn!");
+            model.addAttribute("message", "OTP is invalid or has expired.");
             return "reset-password";
         }
     }
@@ -76,7 +76,7 @@ public class PasswordResetController {
     @GetMapping("/resend-reset-otp")
     public String resendResetOtp(@RequestParam String email, RedirectAttributes redirectAttributes) {
         String message = userService.sendResetOTP(email);
-        if (message.startsWith("OTP mới")) {
+        if (message.startsWith("A new OTP")) {
             redirectAttributes.addFlashAttribute("success", message);
         } else {
             redirectAttributes.addFlashAttribute("message", message);

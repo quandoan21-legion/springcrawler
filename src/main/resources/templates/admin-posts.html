@@ -1,11 +1,10 @@
-rbenv rehash
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý bài viết</title>
+    <title>Post management</title>
 
-    <!-- Bootstrap + Font Awesome + CSS chung -->
+    <!-- Bootstrap + Font Awesome + shared CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
@@ -14,49 +13,49 @@ rbenv rehash
 
 <div class="container mt-4 content-container">
 
-    <!-- Header Admin -->
+    <!-- Admin header -->
     <div class="admin-header">
         <div>
-            <div class="admin-title">Quản lý bài viết</div>
-            <div class="admin-user">Xin chào, <span th:text="${adminName}">Admin</span></div>
+            <div class="admin-title">Post management</div>
+            <div class="admin-user">Hello, <span th:text="${adminName}">Admin</span></div>
         </div>
         <form th:action="@{/logout}" method="post">
             <button class="logout-btn-header">
-                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                <i class="fas fa-sign-out-alt"></i> Sign out
             </button>
         </form>
     </div>
 
-    <!-- Nút thêm và tìm kiếm -->
+    <!-- Actions and search -->
     <div class="button-container my-3 flex-wrap">
-        <a th:href="@{/admin/posts/add}" class="btn-save"><i class="fas fa-plus"></i> Thêm bài viết</a>
+        <a th:href="@{/admin/posts/add}" class="btn-save"><i class="fas fa-plus"></i> Add post</a>
         <form th:action="@{/admin/posts}" method="get" class="search-bar" style="margin-bottom:0;">
-            <input type="text" name="search" placeholder="Tìm theo tiêu đề" th:value="${search}">
+            <input type="text" name="search" placeholder="Search by title" th:value="${search}">
             <input type="hidden" name="size" th:value="${size}">
             <input type="hidden" name="sort" th:value="${sort}">
             <input type="hidden" name="direction" th:value="${direction}">
-            <button type="submit">Tìm kiếm</button>
+            <button type="submit">Search</button>
         </form>
     </div>
 
-    <!-- Bảng hiển thị bài viết -->
+    <!-- Posts table -->
     <div class="table-responsive">
         <table class="table table-striped admin-table align-middle">
             <thead class="table-light">
             <tr>
                 <th>ID</th>
-                <th>Tiêu đề</th>
+                <th>Title</th>
                 <th>Slug</th>
-                <th>Danh mục</th>
-                <th>Trạng thái</th>
+                <th>Category</th>
+                <th>Status</th>
                 <th>Unique</th>
-                <th>Ngày tạo</th>
-                <th>Hành động</th>
+                <th>Created at</th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
             <tr th:if="${#lists.isEmpty(posts)}">
-                <td colspan="8" class="text-center">Không có bài viết nào.</td>
+                <td colspan="8" class="text-center">No posts found.</td>
             </tr>
             <tr th:each="post : ${posts}">
                 <td th:text="${post.id}"></td>
@@ -67,9 +66,9 @@ rbenv rehash
                 <td th:text="${post.uniqueContent} ? 'Yes' : 'No'"></td>
                 <td th:text="${post.createdAt}"></td>
                 <td class="button-container">
-                    <a th:href="@{/admin/posts/edit/{id}(id=${post.id})}" class="btn-save btn-sm">Sửa</a>
+                    <a th:href="@{/admin/posts/edit/{id}(id=${post.id})}" class="btn-save btn-sm">Edit</a>
                     <a th:href="@{/admin/posts/delete/{id}(id=${post.id})}" class="btn-back-link btn-sm"
-                       onclick="return confirm('Bạn có chắc muốn xóa bài viết này không?');">Xóa</a>
+                       onclick="return confirm('Are you sure you want to delete this post?');">Delete</a>
                 </td>
             </tr>
             </tbody>
@@ -78,8 +77,8 @@ rbenv rehash
 
     <div th:if="${postsPage != null && postsPage.totalPages > 1}" class="pagination">
         <a th:if="${postsPage.hasPrevious()}"
-           th:href="@{/admin/posts(page=${postsPage.number - 1}, size=${size}, search=${search}, sort=${sort}, direction=${direction})}">&laquo; Trước</a>
-        <a th:unless="${postsPage.hasPrevious()}" class="disabled">&laquo; Trước</a>
+           th:href="@{/admin/posts(page=${postsPage.number - 1}, size=${size}, search=${search}, sort=${sort}, direction=${direction})}">&laquo; Previous</a>
+        <a th:unless="${postsPage.hasPrevious()}" class="disabled">&laquo; Previous</a>
 
         <a th:each="i : ${#numbers.sequence(0, postsPage.totalPages - 1)}"
            th:href="@{/admin/posts(page=${i}, size=${size}, search=${search}, sort=${sort}, direction=${direction})}"
@@ -87,20 +86,20 @@ rbenv rehash
            th:text="${i + 1}">1</a>
 
         <a th:if="${postsPage.hasNext()}"
-           th:href="@{/admin/posts(page=${postsPage.number + 1}, size=${size}, search=${search}, sort=${sort}, direction=${direction})}">Sau &raquo;</a>
-        <a th:unless="${postsPage.hasNext()}" class="disabled">Sau &raquo;</a>
+           th:href="@{/admin/posts(page=${postsPage.number + 1}, size=${size}, search=${search}, sort=${sort}, direction=${direction})}">Next &raquo;</a>
+        <a th:unless="${postsPage.hasNext()}" class="disabled">Next &raquo;</a>
     </div>
 
-    <!-- Nút quay lại admin -->
+    <!-- Back to admin -->
     <div class="button-container mt-3">
-        <a th:href="@{/admin}" class="btn-back-link">Quay lại</a>
+        <a th:href="@{/admin}" class="btn-back-link">Back</a>
     </div>
 
 </div>
 
-<!-- Footer Admin -->
+<!-- Admin footer -->
 <div class="admin-footer">
-    © 2025 Hệ thống quản trị. All rights reserved.
+    © 2025 Admin system. All rights reserved.
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

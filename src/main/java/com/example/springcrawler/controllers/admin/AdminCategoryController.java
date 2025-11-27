@@ -51,12 +51,12 @@ public class AdminCategoryController {
     @PostMapping("/add")
     public String addCategory(@ModelAttribute Category category, Model model) {
         if (category.getName() == null || category.getName().trim().isEmpty()) {
-            model.addAttribute("error", "Tên danh mục không được để trống");
+            model.addAttribute("error", "Category name cannot be empty.");
             return "admin-categories-add";
         }
 
         if (categoryService.existsByName(category.getName().trim())) {
-            model.addAttribute("error", "Tên danh mục đã tồn tại");
+            model.addAttribute("error", "Category name already exists.");
             return "admin-categories-add";
         }
 
@@ -77,14 +77,14 @@ public class AdminCategoryController {
     @PostMapping("/edit/{id}")
     public String editCategory(@PathVariable Long id, @ModelAttribute Category category, Model model) {
         if (category.getName() == null || category.getName().trim().isEmpty()) {
-            model.addAttribute("error", "Tên danh mục không được để trống");
+            model.addAttribute("error", "Category name cannot be empty.");
             model.addAttribute("category", categoryService.getCategoryById(id));
             return "admin-categories-edit";
         }
 
         Category existingByName = categoryService.getCategoryByName(category.getName().trim());
         if (existingByName != null && !existingByName.getId().equals(id)) {
-            model.addAttribute("error", "Tên danh mục đã tồn tại");
+            model.addAttribute("error", "Category name already exists.");
             model.addAttribute("category", categoryService.getCategoryById(id));
             return "admin-categories-edit";
         }

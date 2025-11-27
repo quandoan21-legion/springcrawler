@@ -11,10 +11,10 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    // 🔹 Lấy danh mục theo tên
+    // 🔹 Find category by name
     Optional<Category> findByName(String name);
 
-    // 🔹 Kiểm tra danh mục theo tên
+    // 🔹 Check if category name already exists
     boolean existsByName(String name);
 
     Page<Category> findByNameContainingIgnoreCase(String keyword, Pageable pageable);

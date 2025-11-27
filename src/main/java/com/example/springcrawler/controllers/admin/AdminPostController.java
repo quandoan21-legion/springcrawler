@@ -77,7 +77,7 @@ public class AdminPostController {
                           Model model) {
 
         if (!StringUtils.hasText(title) || !StringUtils.hasText(content)) {
-            model.addAttribute("error", "Vui lòng nhập đầy đủ tiêu đề và nội dung!");
+            model.addAttribute("error", "Please provide both title and content.");
             model.addAttribute("categories", categoryService.getAllCategories());
             populatePostFormModel(model, title, slug, content, categoryId, shortDescription, imgUrl, sourceUrl, tags, status,
                     uniqueContent, seoTitle, seoDescription, seoKeywords);
@@ -139,7 +139,7 @@ public class AdminPostController {
                            Model model) {
 
         if (!StringUtils.hasText(title) || !StringUtils.hasText(content)) {
-            model.addAttribute("error", "Vui lòng nhập đầy đủ tiêu đề và nội dung!");
+            model.addAttribute("error", "Please provide both title and content.");
             model.addAttribute("post", postService.getPostById(id));
             model.addAttribute("categories", categoryService.getAllCategories());
             return "admin-post-edit";
@@ -148,7 +148,7 @@ public class AdminPostController {
         Post post = postService.updatePost(id, title.trim(), content.trim(), categoryId);
 
         if (post == null) {
-            model.addAttribute("error", "Bài viết hoặc danh mục không tồn tại!");
+            model.addAttribute("error", "Post or category does not exist.");
             model.addAttribute("categories", categoryService.getAllCategories());
             return "admin-post-edit";
         }

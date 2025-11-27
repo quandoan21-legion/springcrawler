@@ -56,13 +56,13 @@ public class AdminCrawlController {
 
         Source source = sourceService.getSourceById(sourceId);
         if (source == null) {
-            model.addAttribute("error", "Nguồn không tồn tại hoặc đã bị xóa.");
+            model.addAttribute("error", "Source does not exist or has been removed.");
             return "admin-crawl";
         }
 
         String sourceUrl = source.getUrl();
         if (sourceUrl == null || sourceUrl.trim().isEmpty()) {
-            model.addAttribute("error", "Nguồn chưa có URL hợp lệ.");
+            model.addAttribute("error", "Source is missing a valid URL.");
             return "admin-crawl";
         }
 
@@ -76,7 +76,7 @@ public class AdminCrawlController {
     public String runPendingPosts(Model model) {
         model.addAttribute("sources", sourceService.getActiveSources());
         sourceCrawlService.crawlUnCrawlPost();
-        model.addAttribute("message", "Đang crawl các bài viết UNCRAWL.");
+        model.addAttribute("message", "Processing UNCRAWL posts.");
         return "admin-crawl";
     }
 }

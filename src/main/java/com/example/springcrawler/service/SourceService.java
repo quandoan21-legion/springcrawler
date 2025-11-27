@@ -39,7 +39,7 @@ public class SourceService {
                               String removalSelector) {
         Category category = categoryService.getCategoryById(categoryId);
         if (category == null) {
-            throw new IllegalArgumentException("Danh mục không tồn tại");
+            throw new IllegalArgumentException("Category does not exist.");
         }
 
         Source source = new Source();

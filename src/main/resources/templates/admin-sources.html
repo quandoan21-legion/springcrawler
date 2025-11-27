@@ -1,42 +1,42 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý nguồn tin</title>
+    <title>Source management</title>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 <body>
 <div class="container">
-    <h1>Quản lý nguồn tin</h1>
+    <h1>Source management</h1>
 
     <div class="button-container">
-        <a th:href="@{/admin/sources/add}" class="btn-save">Thêm nguồn</a>
-        <a th:href="@{/admin}" class="btn-back-link">Quay lại trang admin</a>
+        <a th:href="@{/admin/sources/add}" class="btn-save">Add source</a>
+        <a th:href="@{/admin}" class="btn-back-link">Back to admin</a>
     </div>
 
     <table class="admin-table">
         <thead>
         <tr>
             <th>ID</th>
-            <th>Danh mục</th>
+            <th>Category</th>
             <th>URL</th>
-            <th>Hành động</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:if="${sources.size() == 0}">
-            <td colspan="4" style="text-align: center;">Chưa có nguồn nào</td>
+            <td colspan="4" style="text-align: center;">No sources found.</td>
         </tr>
         <tr th:each="source : ${sources}">
             <td th:text="${source.id}">1</td>
-            <td th:text="${source.category.name}">Danh mục</td>
+            <td th:text="${source.category.name}">Category</td>
             <td>
                 <a th:href="${source.url}" th:text="${source.url}" target="_blank" style="color:#4f8ef7;"></a>
             </td>
             <td>
-                <a th:href="@{/admin/sources/edit/{id}(id=${source.id})}" class="btn-save">Sửa</a>
+                <a th:href="@{/admin/sources/edit/{id}(id=${source.id})}" class="btn-save">Edit</a>
                 <a th:href="@{/admin/sources/delete/{id}(id=${source.id})}" class="btn-back-link"
-                   onclick="return confirm('Xác nhận ẩn nguồn này?');">Ẩn (soft delete)</a>
+                   onclick="return confirm('Hide this source?');">Hide (soft delete)</a>
             </td>
         </tr>
         </tbody>

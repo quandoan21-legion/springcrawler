@@ -1,13 +1,13 @@
 <!-- admin-header-footer.html -->
 <div class="admin-header">
     <div>
-        <div class="admin-title" th:text="${pageTitle}">Trang Admin</div>
-        <div class="admin-user">Xin chào, <span th:text="${adminName}">Admin</span></div>
+        <div class="admin-title" th:text="${pageTitle}">Admin dashboard</div>
+        <div class="admin-user">Hello, <span th:text="${adminName}">Admin</span></div>
     </div>
 
     <form th:action="@{/logout}" method="post">
         <button class="logout-btn-header">
-            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            <i class="fas fa-sign-out-alt"></i> Sign out
         </button>
     </form>
 </div>
@@ -17,5 +17,5 @@
 </div>
 
 <div class="admin-footer">
-    © 2025 Hệ thống quản trị. All rights reserved.
+    © 2025 Admin system. All rights reserved.
 </div>

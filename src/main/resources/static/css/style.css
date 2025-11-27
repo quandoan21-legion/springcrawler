@@ -79,7 +79,8 @@ button:hover {
     color: #5c5cff;
 }
 .form-footer {
-    margin-top: 20px; /* tạo khoảng cách với nút */
+    margin-top: 20px; /* add spacing above the button */
     font-size: 19px;
     text-align: center;
+    color: #ffffff;
 }

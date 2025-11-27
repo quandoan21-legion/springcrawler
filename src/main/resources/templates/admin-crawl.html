@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Crawl danh mục</title>
+    <title>Category crawler</title>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 <body>
 <div class="container">
-    <h1>Thử nghiệm crawl nguồn</h1>
+    <h1>Source crawling test</h1>
 
     <form th:action="@{/admin/crawl}" method="post" class="edit-form">
     <div th:if="${error}" class="error" th:text="${error}"
@@ -16,9 +16,9 @@
          style="color:#6bff8f;text-align:center;margin-bottom:15px;"></div>
 
         <div class="form-group">
-            <label for="sourceId">Chọn nguồn (theo danh mục)</label>
+            <label for="sourceId">Select source (by category)</label>
             <select id="sourceId" name="sourceId" required>
-                <option value="" disabled th:selected="${selectedSourceId == null}">-- Chọn nguồn --</option>
+                <option value="" disabled th:selected="${selectedSourceId == null}">-- Select source --</option>
                 <option th:each="source : ${sources}"
                         th:value="${source.id}"
                         th:text="${source.category != null ? source.category.name + ' - ' + source.url : source.url}"
@@ -30,20 +30,20 @@
 
 
         <div class="button-container">
-            <button type="submit" class="btn-save">Bắt đầu crawl</button>
+            <button type="submit" class="btn-save">Start crawling</button>
             <button type="button"
                     class="btn-save btn-secondary"
-                    onclick="document.getElementById('pending-form').submit();">Chạy UNCRAWL</button>
-            <a th:href="@{/admin}" class="btn-back-link">Quay lại trang admin</a>
+                    onclick="document.getElementById('pending-form').submit();">Run UNCRAWL queue</button>
+            <a th:href="@{/admin}" class="btn-back-link">Back to admin</a>
         </div>
     </form>
 
     <form id="pending-form" th:action="@{/admin/crawl/run-pending}" method="post" style="display:none;"></form>
 
     <div th:if="${links != null}">
-        <h2>Kết quả</h2>
-        <p th:if="${sourceUrl}" th:text="'Nguồn: ' + ${sourceUrl}" style="margin-bottom:10px;"></p>
-        <p th:if="${links.size() == 0}">Không tìm thấy liên kết phù hợp.</p>
+        <h2>Results</h2>
+        <p th:if="${sourceUrl}" th:text="'Source: ' + ${sourceUrl}" style="margin-bottom:10px;"></p>
+        <p th:if="${links.size() == 0}">No matching links were found.</p>
         <ul th:if="${links.size() > 0}">
             <li th:each="link : ${links}">
                 <a th:href="${link}" th:text="${link}" target="_blank" style="color:#4f8ef7;"></a>

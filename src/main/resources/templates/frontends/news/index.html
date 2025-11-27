@@ -16,7 +16,7 @@
             <ul class="flex category-nav">
                 <li class="hover-link nav-item"
                     th:classappend="${selectedCategoryId} == null ? ' active' : ''">
-                    <a href="/">Tất cả</a>
+                    <a href="/">All</a>
                 </li>
                 <li class="hover-link nav-item"
                     th:each="category : ${categories}"
@@ -28,7 +28,7 @@
         </div>
         <form class="search-bar flex" method="get" action="/">
             <input type="text" class="news-input" id="search-text" name="keyword"
-                   placeholder="Tìm kiếm tiêu đề" th:value="${keyword}">
+                   placeholder="Search by title" th:value="${keyword}">
             <input type="hidden" name="categoryId" th:value="${selectedCategoryId}">
             <button class="search-button" type="submit">Search</button>
         </form>
@@ -38,7 +38,7 @@
 
 <main>
     <div class="cards-container container flex" id="cardscontainer">
-        <p th:if="${#lists.isEmpty(posts)}" style="width:100%;text-align:center;">Chưa có bài viết nào được crawl.</p>
+        <p th:if="${#lists.isEmpty(posts)}" style="width:100%;text-align:center;">No crawled posts yet.</p>
         <div class="card" th:each="post : ${posts}">
             <div class="card-header">
                 <img th:src="${post.imgUrl != null} ? ${post.imgUrl} : @{/front/news/images/NewsWebsite.png}"
@@ -47,15 +47,15 @@
             <div class="card-content">
                 <h3 id="news-title" th:text="${post.title}">This is the Title</h3>
                 <h6 class="news-source" id="news-source"
-                    th:text="${post.category != null ? post.category.name : 'Tin tổng hợp'} + ' · ' + #temporals.format(post.createdAt, 'dd/MM/yyyy HH:mm')">
+                    th:text="${post.category != null ? post.category.name : 'General news'} + ' · ' + #temporals.format(post.createdAt, 'dd/MM/yyyy HH:mm')">
                     constGenius 02/02/2024
                 </h6>
                 <p class="news-desc" id="news-desc"
-                   th:text="${post.shortDescription != null ? post.shortDescription : (post.content != null ? #strings.abbreviate(post.content, 180) : 'Đang cập nhật...')}">
+                   th:text="${post.shortDescription != null ? post.shortDescription : (post.content != null ? #strings.abbreviate(post.content, 180) : 'Updating...')}">
                     Lorem ipsum dolor sit, amet consectetur adipisicing elit.
                 </p>
                 <div class="cta">
-                    <a th:if="${post.sourceUrl != null}" th:href="${post.sourceUrl}" target="_blank">Đọc nguồn gốc</a>
+                    <a th:if="${post.sourceUrl != null}" th:href="${post.sourceUrl}" target="_blank">Read original source</a>
                 </div>
             </div>
         </div>

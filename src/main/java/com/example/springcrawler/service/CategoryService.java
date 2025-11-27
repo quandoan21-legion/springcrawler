@@ -17,7 +17,7 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    // Lấy tất cả danh mục
+    // Fetch all categories
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
@@ -29,29 +29,29 @@ public class CategoryService {
         return categoryRepository.findAll(pageable);
     }
 
-    // Lấy danh mục theo id
+    // Fetch category by id
     public Category getCategoryById(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
         return category.orElse(null);
     }
 
-    //  Lấy danh mục theo tên
+    //  Fetch category by name
     public Category getCategoryByName(String name) {
         Optional<Category> category = categoryRepository.findByName(name);
         return category.orElse(null);
     }
 
-    // Kiểm tra tên danh mục đã tồn tại
+    // Check if a category name already exists
     public boolean existsByName(String name) {
         return categoryRepository.existsByName(name);
     }
 
-    // Tạo danh mục mới
+    // Create a new category
     public void createCategory(Category category) {
         categoryRepository.save(category);
     }
 
-    // Cập nhật danh mục
+    // Update an existing category
     public void updateCategory(Long id, Category updatedCategory) {
         Category category = getCategoryById(id);
         if (category != null) {
@@ -62,7 +62,7 @@ public class CategoryService {
         }
     }
 
-    // Xóa danh mục
+    // Delete a category
     public void deleteCategory(Long id) {
         categoryRepository.deleteById(id);
     }

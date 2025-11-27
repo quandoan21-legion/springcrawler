@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
       th:fragment="layout(pageTitle, content, headExtra, scriptExtra)">
 <head>
     <meta charset="UTF-8">
@@ -27,16 +27,16 @@
                 </a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="/admin" class="nav-link">Trang quản trị</a>
+                <a href="/admin" class="nav-link">Admin dashboard</a>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <span class="nav-link">Xin chào, Admin</span>
+                <span class="nav-link">Hello, Admin</span>
             </li>
             <li class="nav-item">
                 <form th:action="@{/logout}" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-sm btn-outline-secondary">Đăng xuất</button>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Sign out</button>
                 </form>
             </li>
         </ul>
@@ -58,19 +58,19 @@
                     <li class="nav-item">
                         <a href="/admin/posts" class="nav-link">
                             <i class="nav-icon fas fa-newspaper"></i>
-                            <p>Bài viết</p>
+                            <p>Posts</p>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="/admin/categories" class="nav-link">
                             <i class="nav-icon fas fa-list"></i>
-                            <p>Danh mục</p>
+                            <p>Categories</p>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="/admin/sources" class="nav-link">
                             <i class="nav-icon fas fa-link"></i>
-                            <p>Nguồn tin</p>
+                            <p>Sources</p>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -82,7 +82,7 @@
                     <li class="nav-item">
                         <a href="/admin/users" class="nav-link">
                             <i class="nav-icon fas fa-users"></i>
-                            <p>Người dùng</p>
+                            <p>Users</p>
                         </a>
                     </li>
                 </ul>
@@ -100,7 +100,7 @@
 
     <footer class="main-footer text-center">
         <strong>&copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span> Spring Crawler.</strong>
-        <span>Tất cả các quyền được bảo lưu.</span>
+        <span>All rights reserved.</span>
     </footer>
 </div>
 

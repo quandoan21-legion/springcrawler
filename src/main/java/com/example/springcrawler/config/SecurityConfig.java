@@ -26,7 +26,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        // Cho phép các route không cần đăng nhập
+                        // Allow public routes without authentication
                         .requestMatchers(
                                 "/api/v1/auth",
                                 "/api/v1/auth/**",
@@ -34,11 +34,9 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/images/**"
                         ).permitAll()
-
-                        // Chỉ chặn admin
+                        // Restrict admin routes
                         .requestMatchers("/admin/**").authenticated()
-
-                        // Còn lại permit
+                        // Permit everything else
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form

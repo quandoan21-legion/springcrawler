@@ -1,68 +1,68 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Thêm nguồn tin</title>
+    <title>Add source</title>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 <body>
 <div class="container">
-    <h1>Thêm nguồn tin</h1>
+    <h1>Add source</h1>
 
     <div th:if="${error}" class="error" th:text="${error}"
          style="color:#ff6b6b;text-align:center;margin-bottom:15px;"></div>
 
     <form th:action="@{/admin/sources/add}" method="post" class="edit-form">
         <div class="form-group">
-            <label for="categoryId">Danh mục:</label>
+            <label for="categoryId">Category:</label>
             <select id="categoryId" name="categoryId" required>
-                <option value="" disabled selected>Chọn danh mục</option>
+                <option value="" disabled selected>Select category</option>
                 <option th:each="category : ${categories}"
                         th:value="${category.id}"
-                        th:text="${category.name}">Danh mục</option>
+                        th:text="${category.name}">Category</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="url">URL nguồn:</label>
+            <label for="url">Source URL:</label>
             <input id="url" type="url" name="url" placeholder="https://example.com/feed"
                    th:value="${source.url}" required>
         </div>
 
         <div class="form-group">
-            <label for="titleSelector">CSS tiêu đề (class, id hoặc selector):</label>
+            <label for="titleSelector">Title CSS selector (class, id, or query):</label>
             <input id="titleSelector" type="text" name="titleSelector" th:value="${source.titleSelector}"
                    placeholder="VD: h1.article-title"/>
         </div>
 
         <div class="form-group">
-            <label for="contentSelector">CSS nội dung bài viết:</label>
+            <label for="contentSelector">Content CSS selector:</label>
             <input id="contentSelector" type="text" name="contentSelector" th:value="${source.contentSelector}"
                    placeholder="VD: article.fck_detail"/>
         </div>
 
         <div class="form-group">
-            <label for="descriptionSelector">CSS mô tả/ngắn gọn:</label>
+            <label for="descriptionSelector">Summary CSS selector:</label>
             <input id="descriptionSelector" type="text" name="descriptionSelector"
                    th:value="${source.descriptionSelector}" placeholder="VD: p.description"/>
         </div>
 
         <div class="form-group">
-            <label for="imageSelector">CSS hình đại diện:</label>
+            <label for="imageSelector">Image CSS selector:</label>
             <input id="imageSelector" type="text" name="imageSelector" th:value="${source.imageSelector}"
                    placeholder="VD: .article-thumb img"/>
         </div>
 
         <div class="form-group">
-            <label for="removalSelector">CSS cần loại bỏ khỏi nội dung:</label>
+            <label for="removalSelector">CSS to remove from content:</label>
             <input id="removalSelector" type="text" name="removalSelector" th:value="${source.removalSelector}"
                    placeholder="VD: .ads, .related-news"/>
-            <small>Dùng selector CSS để xóa các phần không mong muốn trước khi lưu nội dung.</small>
+            <small>Use CSS selectors to strip unwanted sections before saving content.</small>
         </div>
 
         <div class="button-container">
-            <button type="submit" class="btn-save">Thêm nguồn</button>
-            <a th:href="@{/admin/sources}" class="btn-back-link">Quay lại</a>
+            <button type="submit" class="btn-save">Add source</button>
+            <a th:href="@{/admin/sources}" class="btn-back-link">Back</a>
         </div>
     </form>
 </div>

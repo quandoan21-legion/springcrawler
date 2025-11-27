@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Không tìm thấy trang</title>
+    <title>Page not found</title>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 <body>
 <div class="container">
-    <h1>404 - Không tìm thấy trang</h1>
-    <p th:text="'Đường dẫn ' + ${path} + ' không tồn tại hoặc đã bị xóa.'"></p>
+    <h1>404 - Page not found</h1>
+    <p th:text="'Path ' + ${path} + ' does not exist or has been removed.'"></p>
     <div class="button-container">
-        <a th:href="@{/}" class="btn-save">Về trang chủ</a>
-        <a th:href="@{/api/v1/auth}" class="btn-back-link">Đăng nhập</a>
+        <a th:href="@{/}" class="btn-save">Go to homepage</a>
+        <a th:href="@{/api/v1/auth}" class="btn-back-link">Sign in</a>
     </div>
 </div>
 </body>

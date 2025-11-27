@@ -24,7 +24,7 @@ public class PostService {
         this.categoryRepository = categoryRepository;
     }
 
-    // Lấy tất cả bài viết
+    // Fetch all posts
     public List<Post> getAllPosts() {
         return postRepository.findAll();
     }
@@ -36,7 +36,7 @@ public class PostService {
         return postRepository.findAll(pageable);
     }
 
-    // Lấy bài viết theo ID
+    // Fetch a post by ID
     public Post getPostById(Long id) {
         return postRepository.findById(id).orElse(null);
     }
@@ -76,9 +76,9 @@ public class PostService {
         return postRepository.findByStatusIn(statuses, pageable);
     }
 
-    // Tạo bài viết mới
+    // Create a new post
     public Post createPost(String title, String content, Long categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Danh mục không tồn tại"));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category does not exist"));
         Post post = new Post();
         post.setTitle(title);
         post.setContent(content);
@@ -87,7 +87,7 @@ public class PostService {
     }
 
 
-    // Cập nhật bài viết
+    // Update an existing post
     public Post updatePost(Long id, String title, String content, Long categoryId) {
         Post post = getPostById(id);
         if (post != null) {
@@ -102,12 +102,12 @@ public class PostService {
         return null;
     }
 
-    // Lưu bài viết (nếu cần dùng trực tiếp)
+    // Save a post directly
     public void savePost(Post post) {
         postRepository.save(post);
     }
 
-    // Xóa bài viết
+    // Delete a post
     public void deletePost(Long id) {
         postRepository.deleteById(id);
     }

@@ -49,7 +49,7 @@ public class LoginController {
             return "redirect:/admin";
         } catch (Exception e) {
             logger.error("Login failed for email {}: {}", loginRequest.getEmail(), e.getMessage(), e);
-            model.addAttribute("message", "Email hoặc mật khẩu không đúng!");
+            model.addAttribute("message", "Invalid email or password.");
             model.addAttribute("loginRequest", loginRequest);
             return "login";
         }

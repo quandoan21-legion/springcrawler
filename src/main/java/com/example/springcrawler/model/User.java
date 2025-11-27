@@ -26,17 +26,17 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    // Thời gian tạo và cập nhật
+    // Creation and update timestamps
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
 
-    // Tài khoản chưa active → phải xác minh OTP mới login được
+    // Account must be activated via OTP before login is allowed
     private boolean enabled = false;
 
-    // Lưu OTP gửi qua email
+    // Store OTP sent via email
     private String otp;
 
-    // Thời điểm hết hạn OTP
+    // OTP expiration timestamp
     private LocalDateTime otpExpiredTime;
 
     private LocalDateTime lastOtpSentTime;

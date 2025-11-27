@@ -58,9 +58,9 @@ public class AdminUserController {
                            Model model) {
         try {
             userService.updateUser(id, fullName, email, password);
-            model.addAttribute("message", "Cập nhật thành công");
+            model.addAttribute("message", "Update successful.");
         } catch (Exception e) {
-            model.addAttribute("error", "Cập nhật thất bại");
+            model.addAttribute("error", "Update failed.");
             return "admin-users-edit";
         }
         return "redirect:/admin/users";

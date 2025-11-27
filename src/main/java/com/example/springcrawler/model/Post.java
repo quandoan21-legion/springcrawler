@@ -21,7 +21,7 @@ public class Post {
     private String title;
 
     @Column(nullable = true, unique = true)
-    private String slug; // URL thân thiện
+    private String slug; // SEO-friendly URL
 
 
     @Column(columnDefinition = "TEXT")
