@@ -201,27 +201,17 @@ public class SourceCrawlService {
     }
 
     private String extractImageUrl(Document document, String imageSelector) {
-
-        if (!StringUtils.hasText(imageSelector)) {
-            return null;
-        }
-        Element imageElement = document.select(imageSelector).first();
-        if (imageElement == null) {
+        if (document == null || !StringUtils.hasText(imageSelector)) {
             return null;
         }
 
-        String[] attributesToCheck = new String[]{
-                "src", "data-src", "data-original", "data-original-src", "data-srcset", "srcset"
-        };
-
-        for (String attr : attributesToCheck) {
-            String value = resolveImageAttribute(imageElement, attr);
-            if (StringUtils.hasText(value)) {
-                return value;
-            }
+        Element img = document.selectFirst(imageSelector);
+        if (img == null) {
+            return null;
         }
 
-        return null;
+        String src = img.attr("src");
+        return StringUtils.hasText(src) ? src : null;
     }
 
     private String resolveImageAttribute(Element element, String attribute) {
