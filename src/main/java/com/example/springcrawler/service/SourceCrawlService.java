@@ -2,6 +2,7 @@ package com.example.springcrawler.service;
 
 import com.example.springcrawler.model.Post;
 import com.example.springcrawler.model.Source;
+import jakarta.annotation.PostConstruct;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -35,6 +36,11 @@ public class SourceCrawlService {
     public SourceCrawlService(PostService postService, SourceService sourceService) {
         this.postService = postService;
         this.sourceService = sourceService;
+    }
+
+    @PostConstruct
+    public void startBotsOnStartup() {
+        runCrawlerBots();
     }
 
     public Set<String> crawlSourceForPostLink(Source source, String categoryUrl, String siteUrl) {
