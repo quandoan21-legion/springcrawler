@@ -10,6 +10,7 @@
     <h1>Source crawling test</h1>
 
     <form th:action="@{/admin/crawl}" method="post" class="edit-form">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
     <div th:if="${error}" class="error" th:text="${error}"
          style="color:#ff6b6b;text-align:center;margin-bottom:15px;"></div>
     <div th:if="${message}" class="success" th:text="${message}"
@@ -33,12 +34,14 @@
             <button type="submit" class="btn-save">Start crawling</button>
             <button type="button"
                     class="btn-save btn-secondary"
-                    onclick="document.getElementById('pending-form').submit();">Run UNCRAWL queue</button>
+                    onclick="document.getElementById('get-uncrawl-form').submit();">Get UNCRAWL posts</button>
             <a th:href="@{/admin}" class="btn-back-link">Back to admin</a>
         </div>
     </form>
 
-    <form id="pending-form" th:action="@{/admin/crawl/run-pending}" method="post" style="display:none;"></form>
+    <form id="get-uncrawl-form" th:action="@{/admin/crawl/get-uncrawl-posts}" method="post" style="display:none;">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    </form>
 
     <div th:if="${links != null}">
         <h2>Results</h2>

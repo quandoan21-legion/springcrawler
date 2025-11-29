@@ -51,7 +51,7 @@ public class UserController {
         List<Integer> pageNumbers = buildPageWindow(postsPage, 5);
         List<Category> categories = categoryService.getAllCategories();
 
-        model.addAttribute("title", "News Vendor Home");
+        model.addAttribute("pageTitle", "SpringCrawler");
         model.addAttribute("keyword", keyword);
         model.addAttribute("sortOption", sortOption);
         model.addAttribute("selectedCategoryId", categoryId);
@@ -99,7 +99,7 @@ public class UserController {
             return "redirect:/";
         }
 
-        model.addAttribute("title", post.getTitle());
+        model.addAttribute("pageTitle", post.getTitle());
         model.addAttribute("post", post);
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("selectedCategoryId", post.getCategory() != null ? post.getCategory().getId() : null);

@@ -7,6 +7,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.jsoup.select.Selector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -21,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class SourceCrawlService {
+    private static final Logger log = LoggerFactory.getLogger(SourceCrawlService.class);
     private final PostService postService;
     private final SourceService sourceService;
 
@@ -40,15 +44,14 @@ public class SourceCrawlService {
 
     @PostConstruct
     public void startBotsOnStartup() {
-        runCrawlerBots();
+        // Temporarily disabled to prevent automatic bot execution during manual testing.
+        // runCrawlerBots();
     }
 
     public Set<String> crawlSourceForPostLink(Source source, String categoryUrl, String siteUrl) {
         Set<String> articleLinks = new HashSet<>();
         try {
-            Document doc = Jsoup.connect(categoryUrl)
-                    .timeout(5000)
-                    .get();
+            Document doc = Jsoup.connect(categoryUrl).timeout(5000).get();
 
             Elements links = doc.select("a[href]");
             for (Element link : links) {
@@ -70,7 +73,7 @@ public class SourceCrawlService {
             }
 
         } catch (IOException e) {
-            System.err.println("Error crawling category: " + e.getMessage());
+            log.error("Error crawling category: {}", e.getMessage());
         }
 
         return articleLinks;
@@ -84,17 +87,12 @@ public class SourceCrawlService {
                 post.setSourceUrl(url);
             }
             try {
-                Document doc = Jsoup.connect(url)
-                        .timeout(5000)
-                        .get();
+                Document doc = Jsoup.connect(url).timeout(5000).get();
 
                 Source source = post.getSource();
-                String titleSelector = resolveSelector(source != null ? source.getTitleSelector() : null,
-                        DEFAULT_TITLE_SELECTOR);
-                String contentSelector = resolveSelector(source != null ? source.getContentSelector() : null,
-                        DEFAULT_CONTENT_SELECTOR);
-                String descriptionSelector = resolveSelector(source != null ? source.getDescriptionSelector() : null,
-                        DEFAULT_DESCRIPTION_SELECTOR);
+                String titleSelector = resolveSelector(source != null ? source.getTitleSelector() : null, DEFAULT_TITLE_SELECTOR);
+                String contentSelector = resolveSelector(source != null ? source.getContentSelector() : null, DEFAULT_CONTENT_SELECTOR);
+                String descriptionSelector = resolveSelector(source != null ? source.getDescriptionSelector() : null, DEFAULT_DESCRIPTION_SELECTOR);
                 String imageSelector = source != null ? source.getImageSelector() : null;
                 String removalSelector = source != null ? source.getRemovalSelector() : null;
 
@@ -118,7 +116,7 @@ public class SourceCrawlService {
                 post.setStatus(Post.Status.CRAWLED);
                 postService.savePost(post);
             } catch (IOException e) {
-                System.err.println("Error crawling category: " + e.getMessage());
+                log.error("Error crawling category: {}", e.getMessage());
             }
 
         }
@@ -161,7 +159,7 @@ public class SourceCrawlService {
                     break;
                 }
             } catch (Exception ex) {
-                System.err.println("Error queueing source " + source.getId() + ": " + ex.getMessage());
+                log.error("Error queueing source {}: {}", source.getId(), ex.getMessage());
             }
         }
     }
@@ -194,24 +192,36 @@ public class SourceCrawlService {
     }
 
     private Element selectFirst(Document document, String selector) {
+        if (document == null) {
+            return null;
+        }
         if (!StringUtils.hasText(selector)) {
             return null;
         }
-        return document.select(selector).first();
+        try {
+            return document.select(selector).first();
+        } catch (Selector.SelectorParseException ex) {
+            log.warn("Invalid selector '{}': {}", selector, ex.getMessage());
+            return null;
+        }
     }
 
     private String extractImageUrl(Document document, String imageSelector) {
-        if (document == null || !StringUtils.hasText(imageSelector)) {
-            return null;
+        Elements imgs = document.select(imageSelector);
+
+        if (!imgs.isEmpty()) {
+            Element img = imgs.first(); // Get the first img element
+
+            if (img.hasAttr("data-src")) {
+                return img.attr("data-src");
+            } else if (img.hasAttr("data-original")) {
+                return img.attr("data-original");
+            } else if (img.hasAttr("src")) {
+                return img.attr("src");
+            }
         }
 
-        Element img = document.selectFirst(imageSelector);
-        if (img == null) {
-            return null;
-        }
-
-        String src = img.attr("src");
-        return StringUtils.hasText(src) ? src : null;
+        return null;
     }
 
     private String resolveImageAttribute(Element element, String attribute) {

@@ -199,4 +199,35 @@ Ensure Cloud SQL IAM permissions allow the service to connect. When running loca
 
 ---
 
+## 10. Basic Usage
+
+1. **Register / Login**
+   - Visit `/api/v1/auth/register`, fill in details, confirm password, and enter the emailed OTP.
+   - Sign in at `/api/v1/auth` and you will be redirected to `/admin`.
+
+2. **Create Categories**
+   - Navigate to `/admin/categories`, add or edit categories that will organize posts and sources.
+
+3. **Define Sources**
+   - Under `/admin/sources`, add a source per category with the correct CSS selectors for title, content, description, image, and any removal selectors.
+
+4. **Queue Links**
+   - Go to `/admin/crawl`, choose a source, click *Start crawling* to queue new `UNCRAWL` posts.
+
+5. **Process UNCRAWL Posts**
+   - Still on `/admin/crawl`, click *Run UNCRAWL queue* (or wait for the background bot) to fetch content, images, and metadata.
+
+6. **Review & Publish Posts**
+   - Visit `/admin/posts` to edit the crawled entries, add SEO metadata, mark “unique content,” and set status to `PUBLISHED`.
+
+7. **Public Site**
+   - Access `/` to verify that the published posts appear with search, sort, and category filters; click a post to view `/posts/{id}`.
+
+8. **Password Reset / OTP Resend**
+   - Users can trigger `/api/v1/auth/forgot-password` for reset OTPs; admins can resend OTPs from registration flow if needed.
+
+This sequence covers a typical crawl-to-publication cycle. Repeat steps 3–7 for additional sources and categories.
+
+---
+
 This README consolidates the full architectural overview, database schema, routes, and flows. Update it whenever core functionality changes.

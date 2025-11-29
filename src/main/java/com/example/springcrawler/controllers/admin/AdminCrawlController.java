@@ -72,7 +72,7 @@ public class AdminCrawlController {
         return "admin-crawl";
     }
 
-    @PostMapping("/run-pending")
+    @PostMapping({"/run-pending", "/get-uncrawl-posts"})
     public String runPendingPosts(Model model) {
         model.addAttribute("sources", sourceService.getActiveSources());
         sourceCrawlService.crawlUnCrawlPost();

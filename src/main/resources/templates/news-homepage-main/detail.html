@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png"
     th:href="@{/news-homepage-main/assets/images/favicon-32x32.png}">
   <link rel="stylesheet" href="style.css" th:href="@{/news-homepage-main/style.css}">
-  <title th:text="${post != null ? post.title : 'News Detail'}">News Detail</title>
+  <title th:text="${pageTitle != null ? pageTitle : (post != null ? post.title : 'SpringCrawler')}">SpringCrawler</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="app.js" defer th:src="@{/news-homepage-main/app.js}"></script>
 </head>
