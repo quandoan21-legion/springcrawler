@@ -79,6 +79,10 @@ public class SourceCrawlService {
     }
 
     public void crawlUnCrawlPost() {
+        int repaired = postService.promoteUncrawlPostsWithContent();
+        if (repaired > 0) {
+            log.info("Promoted {} stale UNCRAWL posts to CRAWLED based on existing content.", repaired);
+        }
         List<Post> uncrawlPost = postService.getUnCrawlPosts(BATCH_SIZE);
         for (Post post : uncrawlPost) {
             String url = post.getCrawlUrl();

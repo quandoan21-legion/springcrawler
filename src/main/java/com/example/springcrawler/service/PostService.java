@@ -11,8 +11,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class PostService {
@@ -104,11 +105,49 @@ public class PostService {
 
     // Save a post directly
     public void savePost(Post post) {
+        if (post == null) {
+            return;
+        }
+        promoteStatusIfContentPresent(post);
+        post.setUpdatedAt(LocalDateTime.now());
         postRepository.save(post);
     }
 
     // Delete a post
     public void deletePost(Long id) {
         postRepository.deleteById(id);
+    }
+
+    /**
+     * Promote any legacy UNCRAWL posts that already have crawled data but never had their status flipped.
+     * Returns the number of posts updated so callers can log/monitor repairs.
+     */
+    public int promoteUncrawlPostsWithContent() {
+        List<Post> uncrawled = postRepository.findByStatusOrderByCreatedAtDesc(Post.Status.UNCRAWL);
+        int updated = 0;
+        for (Post post : uncrawled) {
+            if (hasCrawledPayload(post)) {
+                post.setStatus(Post.Status.CRAWLED);
+                savePost(post);
+                updated++;
+            }
+        }
+        return updated;
+    }
+
+    private void promoteStatusIfContentPresent(Post post) {
+        if (post.getStatus() == Post.Status.UNCRAWL && hasCrawledPayload(post)) {
+            post.setStatus(Post.Status.CRAWLED);
+        }
+    }
+
+    private boolean hasCrawledPayload(Post post) {
+        if (post == null) {
+            return false;
+        }
+        return StringUtils.hasText(post.getTitle()) ||
+                StringUtils.hasText(post.getContent()) ||
+                StringUtils.hasText(post.getShortDescription()) ||
+                StringUtils.hasText(post.getImgUrl());
     }
 }
