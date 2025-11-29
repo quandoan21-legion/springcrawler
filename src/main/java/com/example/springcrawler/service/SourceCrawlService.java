@@ -44,8 +44,7 @@ public class SourceCrawlService {
 
     @PostConstruct
     public void startBotsOnStartup() {
-        // Temporarily disabled to prevent automatic bot execution during manual testing.
-        // runCrawlerBots();
+        runCrawlerBots();
     }
 
     public Set<String> crawlSourceForPostLink(Source source, String categoryUrl, String siteUrl) {
