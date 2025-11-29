@@ -28,7 +28,11 @@
         <button type="submit">Sign in</button>
     </form>
 
-    <p class="form-footer">Need an account? <a th:href="@{/api/v1/auth/register}">Register</a></p>
+    <p class="form-footer">
+        <span>Need an account? <a th:href="@{/api/v1/auth/register}">Register</a></span>
+        <br>
+        <span>Forgot password? <a th:href="@{/api/v1/auth/forgot-password}">Reset it here</a></span>
+    </p>
 </div>
 
 
